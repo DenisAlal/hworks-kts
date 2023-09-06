@@ -1,0 +1,43 @@
+$button-primary-bg: #518581;
+$button-primary-bg-active: #487773;
+$button-primary-bg-disabled: #D9D9D9;
+$button-primary-bg-hover: #86AAA7;
+
+$button-primary-text: #FFFFFF;
+$button-primary-text-active: #FFFFFF;
+$button-primary-text-disabled: #FFFFFF;
+$button-primary-text-hover: #FFFFFF;
+
+.button {
+  display: inline-flex;
+  padding: var(--spase-s) var(--spase-l);
+  justify-content: center;
+  align-items: center;
+  gap: var(--spase-xxs);
+  font-size: 18px;
+  height: 52px;
+  background: $button-primary-bg;
+  color: $button-primary-text;
+  border: none;
+}
+
+.button:hover:enabled {
+  background: $button-primary-bg-hover;
+  color: $button-primary-text-hover;
+}
+
+.button_disabled {
+  background: $button-primary-bg-disabled;
+  color: $button-primary-text-disabled;
+}
+
+.button:active {
+  background: $button-primary-bg-active;
+  color: $button-primary-text-active;
+}
+
+.loader > svg{
+  fill: $button-primary-text;
+}
+
+

@@ -1,0 +1,50 @@
+$input-bg: #FFFFFF;
+$input-bg-disabled: #FFFFFF;
+$input-bg-focus: #FFFFFF;
+$input-border: #FFFFFF;
+$input-border-disabled: #FFFFFF;
+$input-border-focus: #518581;
+$input-placeholder: #AFADB5;
+$input-text: #000000;
+$input-text-disabled: #00000033;
+$input-text-focus: #000000;
+
+.inputComponent {
+
+  background: #FFF;
+  display: flex;
+  align-items: stretch;
+  border: 1px solid $input-border;
+  padding: var(--spase-s) var(--spase-xs);
+
+  input {
+    flex: 1;
+    color: $input-text;
+    background: transparent;
+    line-height: 20px;
+    font-size: 16px;
+    font-style: normal;
+    border: none;
+    outline: none;
+    padding: 0;
+
+    &::placeholder {
+      color: $input-placeholder;
+    }
+  }
+
+  input:disabled {
+    color: $input-text-disabled;
+  }
+
+  input:focus {
+    color: $input-text-focus;
+  }
+}
+
+.inputComponentFocus  {
+  border: 1px solid $input-border-focus;
+}
+.inputComponentFocus  {
+  border: 1px solid $input-border-focus;
+}
