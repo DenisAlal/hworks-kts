@@ -1,0 +1,13 @@
+
+.container {
+  margin: 0 39px 0 100px;
+}
+
+.backBlock {
+  height: 48px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spase-xs);
+}
+

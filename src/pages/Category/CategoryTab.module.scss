@@ -1,0 +1,63 @@
+
+.container {
+  margin: 0 100px;
+}
+.infoContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spase-m);
+  text-align: center;
+  align-items: center;
+  margin-top: 100px;
+  margin-bottom: 48px;
+}
+.infoContentTitle {
+  font-size: 44px;
+}
+.infoDescription {
+  max-width: 670px;
+}
+.products {
+  margin-top: var(--spase-l);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: (var(--spase-xxl));
+}
+
+.productsTitle {
+  line-height: 48px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spase-l);
+  margin-top: 48px;
+}
+
+.findInputBlock {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.findInput {
+  width: 100%;
+}
+
+.findButton {
+  width: 138px;
+}
+
+.divCard {
+  flex-basis: 360px;
+}
+
+.card {
+  min-width: 360px;
+
+  img {
+    height: 360px;
+    width: 360px;
+  }
+}
