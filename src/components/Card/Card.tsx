@@ -33,7 +33,7 @@ const Card: React.FC<CardProps> = (props) => {
             <div className={styles.body}>
                 {props.captionSlot && <p className={styles.captionSlot}>{props.captionSlot}</p>}
                 <Text tag={"h1"} view={"p-20"} maxLines={2} className={styles.title} weight={"normal"}>{props.title}</Text>
-                <Text tag={"h2"} view={"p-16"} color={"secondary"} maxLines={3} weight={"normal"} className={styles.subtitle}>{props.subtitle}</Text>
+                <Text tag={"h2"} view={"p-16"} color={"secondary"} maxLines={2} weight={"normal"} className={styles.subtitle}>{props.subtitle}</Text>
                 <div className={styles.footer}>
                     <p className={styles.contentSlot}>{props.contentSlot}</p>
                     {props.actionSlot}

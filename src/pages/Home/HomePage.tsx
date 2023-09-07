@@ -25,8 +25,11 @@ const HomePage: React.FC = () => {
             setMyData(result.data)
         }
         fetch()
-        console.log(myData)
+
     }, []);
+    useEffect(() => {
+        console.log(myData?.map((item) => item))
+    }, [myData]);
     return (
         <>
             <Header/>

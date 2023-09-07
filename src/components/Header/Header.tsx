@@ -1,36 +1,38 @@
 import cn from "classnames";
 import *  as React from 'react'
+import { useState} from "react";
+import Tabs, {TabItem} from "components/Tabs";
 import Avatar from "../icons/AvatarIcon";
 import Cart from "../icons/CartIcon";
 import Logo from "../icons/LogoIcon";
 import styles from './Header.module.scss'
-import Text from "../Text";
+
 
 export type HeaderProps = {
     className?: string;
-    color?: 'primary' | 'secondary' | 'accent';
 };
 
 const Header: React.FC<HeaderProps> =
     (props) => {
-        const {color, className} = props
+        const {className} = props
+        const [selectedTab, setSelectedTab] = useState(1)
+        const tabs: TabItem[] = [{
+            id: 1,
+            name: "Products",
+        }, {
+            id: 2,
+            name: "Categories",
+        }, {
+            id: 3,
+            name: "About us",
+        }];
 
         return (
             <div className={cn(className, styles.header)}>
-                <div className={styles.logo}><Logo className={styles.logoIcon}/></div>
-                <div className={styles.tabs}>
-                    <div className={styles.tabsContainer}>
-                        <a>
-                            <Text tag={"p"} weight={"medium"} view={"p-18"} color={"primary"}>Products</Text>
-                        </a>
-                        <a>
-                            <Text tag={"p"} weight={"medium"} view={"p-18"} color={"primary"}>Categories</Text>
-                        </a>
-                        <a>
-                            <Text tag={"p"} weight={"medium"} view={"p-18"} color={"primary"}>About us</Text>
-                        </a>
-                    </div>
+                <div className={styles.logo}>
+                    <Logo className={styles.logoIcon}/>
                 </div>
+                <Tabs tabsList={tabs} onClick={setSelectedTab} className={styles.tabs}/>
                 <div className={styles.buttons}>
                     <Cart className={styles.menuIcons}/>
                     <Avatar/>

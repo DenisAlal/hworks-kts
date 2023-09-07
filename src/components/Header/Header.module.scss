@@ -1,3 +1,7 @@
+$primaryColor: #000000;
+$secondaryColor: #AFADB5;
+$accentColor: #518581;
+
 .header {
   width: 100%;
   height: 90px;
@@ -27,13 +31,10 @@
 .tabs {
   grid-area: tabs;
 }
-.tabsContainer {
-  display: flex;
-  flex-direction: row;
-  gap: var(--spase-xl);
-}
+
 
 .buttons {
+  width: 130px;
   grid-area: buttons;
   padding-right: 100px;
   display: flex;
