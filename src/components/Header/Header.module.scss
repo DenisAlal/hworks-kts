@@ -41,3 +41,6 @@ $accentColor: #518581;
   flex-direction: row;
   gap: var(--spase-xl);
 }
+.buttons div {
+  cursor: pointer;
+}

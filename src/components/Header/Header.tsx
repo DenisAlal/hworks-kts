@@ -34,8 +34,12 @@ const Header: React.FC<HeaderProps> =
                 </div>
                 <Tabs tabsList={tabs} onClick={setSelectedTab} className={styles.tabs}/>
                 <div className={styles.buttons}>
-                    <Cart className={styles.menuIcons}/>
-                    <Avatar/>
+                    <div onClick={() => alert("You clicked on: Cart")}>
+                        <Cart className={styles.menuIcons}/>
+                    </div>
+                    <div onClick={() => alert("You clicked on: User")}>
+                        <Avatar/>
+                    </div>
                 </div>
             </div>
         );
