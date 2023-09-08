@@ -45,6 +45,15 @@ $accentColor: #518581;
   flex-direction: row;
   gap: var(--spase-xl);
 }
+
+@media (max-width: 970px) {
+  .buttons {
+    padding-right: 10px;
+  }
+  .logo {
+    padding-left: 10px;
+  }
+}
 .buttons div {
   cursor: pointer;
 }

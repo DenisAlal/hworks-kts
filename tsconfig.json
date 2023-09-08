@@ -22,7 +22,8 @@
       "styles": ["styles/*"],
       "assets": ["assets/*"],
       "utils": ["utils/*"],
-      "pages": ["pages/*"]
+      "pages": ["pages/*"],
+      "lib": ["lib/*"]
     }
   },
   "include": [

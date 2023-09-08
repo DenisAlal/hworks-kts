@@ -6,6 +6,7 @@
   --spase-m: 16px;
   --spase-s: 14px;
   --spase-xs: 12px;
+  --spase-xss: 10px;
   --spase-xxs: 8px;
   font-family: Roboto, sans-serif;
   line-height: 1.5;
@@ -20,7 +21,8 @@
   -webkit-text-size-adjust: 100%;
 }
 
-body{
+body {
   margin: 0;
   padding: 0;
+  color: #000000;
 }

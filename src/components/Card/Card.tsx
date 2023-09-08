@@ -39,7 +39,7 @@ const Card: React.FC<CardProps> = (props) => {
                     </Text>}
                 <div className={styles.footer}>
                     <p className={styles.contentSlot}>{props.contentSlot}</p>
-                    {props.actionSlot}
+                    <div className={styles.actionSlot}>{props.actionSlot}</div>
                 </div>
             </div>
         </div>

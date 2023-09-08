@@ -26,6 +26,18 @@
   gap: (var(--spase-xxl));
 }
 
+@media (max-width: 970px) {
+  .products {
+    justify-content: center;
+  }
+  .container {
+    margin: 0 20px;
+  }
+  .productsTitle {
+    justify-content: center;
+  }
+}
+
 .productsTitle {
   line-height: 48px;
   display: flex;

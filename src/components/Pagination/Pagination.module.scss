@@ -1,0 +1,18 @@
+$primaryColor: #000000;
+$secondaryColor: #AFADB5;
+$accentColor: #518581;
+
+.pagination {
+  display: flex;
+  flex-direction: row;
+  height: 42px;
+}
+
+
+.backArrow{
+}
+
+.nextArrow {
+  transform: rotate(180deg) ;
+  fill: $secondaryColor;
+}
