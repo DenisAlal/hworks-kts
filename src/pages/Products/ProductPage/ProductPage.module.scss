@@ -1,13 +1,30 @@
 
 .container {
-  margin: 0 39px 0 100px;
+  margin: 0 40px 0 100px;
+  .backBlock {
+    height: 48px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--spase-xs);
+    margin-top: 60px;
+  }
+  .mainBlock {
+    margin-top: 32px;
+    .mainContent {
+      .imageScroll {
+        width: 600px;
+        height: 600px;
+      }
+      .productContent {
+
+      }
+    }
+    .relatedItemsBlock {
+
+    }
+  }
 }
 
-.backBlock {
-  height: 48px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--spase-xs);
-}
+
 

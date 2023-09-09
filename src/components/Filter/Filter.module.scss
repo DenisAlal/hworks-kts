@@ -12,6 +12,7 @@ $multiDropdown-bg: #FFFFFF;
 
 .optionsBlock {
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
+  z-index: 10;
 }
 
 .option {
@@ -19,6 +20,7 @@ $multiDropdown-bg: #FFFFFF;
   padding: var(--spase-s) var(--spase-xs);
   align-items: center;
   align-self: stretch;
+  height: 24px;
   background: $multiDropdown-bg;
 
 }

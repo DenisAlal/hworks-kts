@@ -4,17 +4,18 @@ import {useEffect, useState} from "react";
 import {useNavigate} from 'react-router-dom';
 import Button from "../../components/Button";
 import Card from "../../components/Card";
+import Filter, {Option} from "../../components/Filter";
 import Input from "../../components/Input";
 import Pagination from "../../components/Pagination";
 import Text from "../../components/Text";
 import {Products} from "./ProductsTab.interface.ts";
 import styles from './ProductsTab.module.scss'
-// import MultiDropdown from "../../components/MultiDropdown";
-
 
 
 const ProductsTab: React.FC = () => {
     const [data, setData] = useState<Products[]>();
+    const [dataCategory, setDataCategory] = useState<Option[]>();
+    const [selectedCategory, setSelectedCategory] = useState<Option[]>([]);
     const [countProducts, setCountProducts] = useState(0)
     const [findInput, setFindInput] = useState("")
     const [reloadInput, setReloadInput] = useState("")
@@ -30,15 +31,19 @@ const ProductsTab: React.FC = () => {
             if (reloadInput) {
                 url = url + `?title=${reloadInput}`
             }
+            if (selectedCategory.length !== 0 && reloadInput) {
+                url = url + `&categoryId=${selectedCategory[0].key}`
+            } else {
+                url = url + `?categoryId=${selectedCategory[0].key}`
+            }
             const result = await axios({
                 method: "get",
                 url: url
             })
-
             setCountProducts(result.data.length)
         }
         fetch()
-    }, [reloadInput]);
+    }, [reloadInput, selectedCategory]);
 
     useEffect(() => {
         const fetch = async () => {
@@ -51,33 +56,49 @@ const ProductsTab: React.FC = () => {
             } else {
                 url = url + `&offset=${selectedPage * productsOnPage}`
             }
-
             if (reloadInput) {
                 url = url + `&title=${reloadInput}`
             }
-
+            if (selectedCategory.length !== 0) {
+                url = url + `&categoryId=${selectedCategory[0].key}`
+            }
             const result = await axios({
                 method: "get",
                 url: url
             })
-            setData(result.data)
-
+            setData(result.data);
         }
         fetch()
-    }, [reloadInput, selectedPage]);
+
+    }, [countProducts, reloadInput, selectedCategory, selectedPage]);
 
     useEffect(() => {
-        if(countProducts) {
+        if (countProducts) {
             if (Math.floor(countProducts / productsOnPage) === 0 && countProducts > 0) {
                 setPageCount(1)
             } else if (Math.floor(countProducts / productsOnPage) === 1 && countProducts > 9) {
                 setPageCount(2)
             } else {
-                setPageCount(Math.floor(countProducts / productsOnPage) );
+                setPageCount(Math.floor(countProducts / productsOnPage));
             }
 
         }
     }, [countProducts]);
+
+    useEffect(() => {
+        const fetch = async () => {
+            const response = await axios.get(
+                "https://api.escuelajs.co/api/v1/categories"
+            );
+            const modifiedData = response.data.map((item: { id: { toString: () => number; }; name: string; }) => ({
+                key: item.id.toString(),
+                value: item.name,
+            }));
+            setDataCategory(modifiedData);
+        }
+        fetch()
+    }, []);
+
     const goToPage = (id: number) => {
         navigate(`/${id}`)
     }
@@ -86,9 +107,12 @@ const ProductsTab: React.FC = () => {
     };
 
 
-    const findTitlClick = () => {
+    const findTitleClick = () => {
         setReloadInput(findInput)
     }
+    const getTitle = (elements: Option[]) =>
+        elements.map((el: Option) => el.value).join();
+
 
     return (
 
@@ -104,13 +128,20 @@ const ProductsTab: React.FC = () => {
                 </Text>
             </div>
 
-            <div>
+            <div className={styles.filterBlock}>
                 <div className={styles.findInputBlock}>
                     <Input value={findInput} onChange={setFindInput} placeholder={"Search product"}
                            className={styles.findInput}/>
-                    <Button className={styles.findButton} onClick={() => findTitlClick()}>Find now</Button>
+                    <Button className={styles.findButton} onClick={() => findTitleClick()}>Find now</Button>
                 </div>
-                {/*<MultiDropdown options={[]} value={[]} onChange={() => {}} getTitle={}/>*/}
+                <div>
+                    {dataCategory &&
+                        <Filter options={dataCategory} value={selectedCategory} onChange={(newValue: Option[]) => {
+                            setSelectedCategory(newValue);
+                        }} getTitle={getTitle} ifValueEmpty={"Filter"}
+                                className={styles.filterDropDown}/>
+                    }
+                </div>
             </div>
             <Text view={"p-32"} tag={"span"} color={"primary"} weight={"bold"} className={styles.productsTitle}>
                 Total Product
@@ -130,8 +161,9 @@ const ProductsTab: React.FC = () => {
                 ))}
             </div>
             <div className={styles.paginationBlock}>
-                {data &&
-                    <Pagination  currentPage={selectedPage} lastPage={pageCount} maxLength={5} setCurrentPage={setSelectedPage}/>
+                {data && countProducts !== 0 &&
+                    <Pagination currentPage={selectedPage} lastPage={pageCount} maxLength={5}
+                                setCurrentPage={setSelectedPage}/>
                 }
             </div>
         </div>

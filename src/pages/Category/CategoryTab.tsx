@@ -4,15 +4,13 @@ import {useEffect, useState} from "react";
 import {useNavigate} from 'react-router-dom';
 import Button from "../../components/Button";
 import Card from "../../components/Card";
-import Input from "../../components/Input";
 import Text from "../../components/Text";
 import {CategoryTabInterface} from "./CategoryTab.interface.ts";
 import styles from './CategoryTab.module.scss'
-import MultiDropdown from "../../components/MultiDropdown";
 
 
 const CategoryTab: React.FC = () => {
-    const [myData, setMyData] = useState<CategoryTabInterface[]>();
+    const [data, setData] = useState<CategoryTabInterface[]>();
     const navigate = useNavigate();
 
     // const [myData, setMyData] = useState([])
@@ -22,7 +20,7 @@ const CategoryTab: React.FC = () => {
                 method: "get",
                 url: "https://api.escuelajs.co/api/v1/categories"
             })
-            setMyData(result.data)
+            setData(result.data)
         }
         fetch()
     }, []);
@@ -40,12 +38,12 @@ const CategoryTab: React.FC = () => {
 
             <Text view={"p-32"} tag={"span"} color={"primary"} weight={"bold"} className={styles.productsTitle}>
                 Total Category
-                <Text view={"p-20"} tag={"span"} color={"accent"} weight={"bold"}>{myData?.length}</Text>
+                <Text view={"p-20"} tag={"span"} color={"accent"} weight={"bold"}>{data?.length}</Text>
             </Text>
 
 
             <div className={styles.products}>
-                {myData?.map((item) => (
+                {data?.map((item) => (
                     <div key={item.id} className={styles.divCard}>
                         <Card image={item.image} title={item.name}
                               className={styles.card}
