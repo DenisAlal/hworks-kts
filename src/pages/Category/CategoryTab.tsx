@@ -1,7 +1,6 @@
 import axios from 'axios'
 import * as React from "react";
 import {useEffect, useState} from "react";
-import {useNavigate} from 'react-router-dom';
 import Button from "../../components/Button";
 import Card from "../../components/Card";
 import Text from "../../components/Text";
@@ -11,9 +10,6 @@ import styles from './CategoryTab.module.scss'
 
 const CategoryTab: React.FC = () => {
     const [data, setData] = useState<CategoryTabInterface[]>();
-    const navigate = useNavigate();
-
-    // const [myData, setMyData] = useState([])
     useEffect(() => {
         const fetch = async () => {
             const result = await axios({
@@ -48,7 +44,7 @@ const CategoryTab: React.FC = () => {
                         <Card image={item.image} title={item.name}
                               className={styles.card}
                               actionSlot={<Button>View category</Button>}
-                              onClick={() =>navigate('/123')}/>
+                              onClick={() =>{alert("В разработке")}}/>
                     </div>
                 ))}
             </div>

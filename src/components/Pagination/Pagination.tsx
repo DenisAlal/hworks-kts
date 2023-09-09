@@ -21,12 +21,12 @@ const Pagination: React.FC<TabsProps> = (props) => {
     const pageNums = getPaginationItems(currentPage, lastPage, maxLength);
     return (
         <nav className={styles.pagination}>
-            <PageLink
+            <button
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(currentPage - 1)}
             >
                 <ArrowLeftIcon height={24} width={24} className={styles.backArrow}/>
-            </PageLink>
+            </button>
             {pageNums.map((pageNum, id) => (
                 <PageLink
                     key={id}
@@ -37,12 +37,12 @@ const Pagination: React.FC<TabsProps> = (props) => {
                     {!isNaN(pageNum) ? pageNum : '...'}
                 </PageLink>
             ))}
-            <PageLink
+            <button
                 disabled={currentPage === lastPage}
                 onClick={() => setCurrentPage(currentPage + 1)}
             >
                 <ArrowLeftIcon height={24} width={24} className={styles.nextArrow}/>
-            </PageLink>
+            </button>
         </nav>
     );
 

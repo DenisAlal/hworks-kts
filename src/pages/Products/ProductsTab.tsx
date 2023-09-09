@@ -31,11 +31,16 @@ const ProductsTab: React.FC = () => {
             if (reloadInput) {
                 url = url + `?title=${reloadInput}`
             }
-            if (selectedCategory.length !== 0 && reloadInput) {
+            if (selectedCategory === undefined || selectedCategory.length == 0  && reloadInput) {
                 url = url + `&categoryId=${selectedCategory[0].key}`
-            } else {
-                url = url + `?categoryId=${selectedCategory[0].key}`
             }
+            if (selectedCategory === undefined || selectedCategory.length !== 0 && !reloadInput) {
+                if (selectedCategory) {
+                    url = url + `?categoryId=${selectedCategory[0].key}`
+                }
+
+            }
+
             const result = await axios({
                 method: "get",
                 url: url

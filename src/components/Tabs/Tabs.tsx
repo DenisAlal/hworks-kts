@@ -1,7 +1,7 @@
 import cn from "classnames";
 import * as React from 'react';
 import {useContext, useEffect} from "react";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom";
 import {AppContext} from "../../context/App.context.tsx";
 import Text from "../Text";
 import styles from "./Tabs.module.scss"
@@ -20,10 +20,20 @@ const Tabs: React.FC<TabsProps> = (props) => {
     const {tabsList, className} = props
     const {usingTab, setUsingTab} = useContext(AppContext)
     const navigate = useNavigate();
+    const location = useLocation();
     const usingTabLink = (id?: number) => {
-        if (id) {
-            setUsingTab(id);
+        switch (location.pathname) {
+            case "/":
+                setUsingTab(1)
+                break
+            case "/categories":
+                setUsingTab(2)
+                break
+            case "/about":
+                setUsingTab(3)
+                break
         }
+
         switch (id) {
             case 1:
                 navigate('/')
@@ -38,7 +48,8 @@ const Tabs: React.FC<TabsProps> = (props) => {
     }
     useEffect(() => {
         usingTabLink()
-    }, []);
+    }, [location]);
+
 
     return <div className={cn(className, styles.tabsContainer)}>
         {tabsList.map((item) => (

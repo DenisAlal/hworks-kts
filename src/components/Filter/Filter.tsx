@@ -79,18 +79,18 @@ const Filter: React.FC<MultiDropdownProps> = ({
         setFilteredOptions(filteredOptions);
     }, [options, inputValue]);
 
+
     const handleOptionClick = (option: Option) => {
-        setInputValue("")
-        const optionIndex = value.findIndex((val) => val.key === option.key);
-        if (optionIndex !== -1) {
-            const updatedValue = value.map((val) => (val.key === option.key ? option : val));
+        setInputValue("");
+        const isOptionExists = value.some((item) => item === option);
+        if (isOptionExists) {
+            const updatedValue = value.filter((item) => item !== option);
             onChange(updatedValue);
         } else {
             const updatedValue = [option];
             onChange(updatedValue);
         }
     };
-
     const openOptionBlock = () => {
         if (!disabled) {
             setIsOpen(!isOpen)

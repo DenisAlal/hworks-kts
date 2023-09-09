@@ -1,13 +1,12 @@
 import cn from "classnames";
 import *  as React from 'react'
-import {useContext, useState} from "react";
+import {useNavigate} from "react-router-dom";
 import Tabs, {TabItem} from "components/Tabs";
 import Avatar from "../icons/AvatarIcon";
 import Cart from "../icons/CartIcon";
 import Logo from "../icons/LogoIcon";
 import styles from './Header.module.scss'
-import {useNavigate} from "react-router-dom";
-import {AppContext} from "../../context/App.context.tsx";
+
 
 
 export type HeaderProps = {
@@ -16,7 +15,7 @@ export type HeaderProps = {
 
 const Header: React.FC<HeaderProps> =
     (props) => {
-        const {usingTab} = useContext(AppContext)
+        // const {usingTab} = useContext(AppContext)
         const {className} = props
         const navigate = useNavigate();
         const tabs: TabItem[] = [{

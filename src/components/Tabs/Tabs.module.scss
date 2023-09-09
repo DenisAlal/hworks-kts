@@ -8,33 +8,34 @@ $accentColor: #518581;
   display: flex;
   flex-direction: row;
   gap: var(--spase-xl);
+  .tabButton {
+    text-align: center;
+    color: $primaryColor;
+  }
+
+  .tabButton:hover {
+    cursor: pointer;
+    color: $accentColor;
+  }
+
+  .tabButtonActive {
+    text-align: center;
+    color: $accentColor;
+  }
+
+  .lineSelected {
+    width: 80px;
+    height: 3px;
+    background: transparent;
+  }
+
+  .lineSelectedActive {
+    width: 80px;
+    height: 3px;
+    background: $accentColor;
+  }
 }
 
-.tabButton {
-  text-align: center;
-  color: $primaryColor;
-}
 
-.tabButton:hover {
-  cursor: pointer;
-  color: $accentColor;
-}
-
-.tabButtonActive {
-  text-align: center;
-  color: $accentColor;
-}
-
-.lineSelected {
-  width: 80px;
-  height: 3px;
-  background: transparent;
-}
-
-.lineSelectedActive {
-  width: 80px;
-  height: 3px;
-  background: $accentColor;
-}
 
 
