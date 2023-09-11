@@ -25,23 +25,44 @@ const ProductPage: React.FC = () => {
       setData(result.data);
     };
     fetch();
-  }, []);
+  }, [id]);
   useEffect(() => {
     if (data) {
       const fetch = async () => {
-        let url = `https://api.escuelajs.co/api/v1/products/?limit=3&offset=0`;
+        let url = `https://api.escuelajs.co/api/v1/products/`;
         if (data.category.id !== 0) {
-          url = url + `&categoryId=${data.category.id}`;
+          url = url + `?categoryId=${data.category.id}`;
         }
         const result = await axios({
           method: "get",
           url: url,
         });
-        setDataRelatedItems(result.data);
+        if (id) {
+          const updatedData = result.data.filter(
+            (item: Product) => item.id !== Number(id),
+          );
+          const randomItems: Product[] = getRandomItems(updatedData, 3);
+          setDataRelatedItems(randomItems);
+        } else {
+          setDataRelatedItems(result.data);
+        }
       };
       fetch();
     }
   }, [data]);
+
+  const getRandomItems = (data: Product[], count: number): Product[] => {
+    const randomItems: Product[] = [];
+    const dataCopy = [...data];
+
+    for (let i = 0; i < count; i++) {
+      const randomIndex = Math.floor(Math.random() * dataCopy.length);
+      const randomItem = dataCopy.splice(randomIndex, 1)[0];
+      randomItems.push(randomItem);
+    }
+
+    return randomItems;
+  };
 
   const handleNextImage = () => {
     if (data) {
@@ -69,7 +90,6 @@ const ProductPage: React.FC = () => {
 
   const goToPage = (id: number) => {
     navigate(`/${id}`);
-    window.location.reload();
   };
 
   return (

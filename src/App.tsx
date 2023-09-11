@@ -7,7 +7,6 @@ import CategoryTab from "pages/Category/CategoryTab.tsx";
 import ProductsTab from "pages/Products/ProductsTab.tsx";
 import ProductPage from "./pages/ProductPage/ProductPage.tsx";
 
-
 export const productsPath = "/";
 export const categoriesPath = "/categories";
 export const aboutPath = "/about";
