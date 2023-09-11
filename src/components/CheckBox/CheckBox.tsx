@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
 import cn from "classnames";
-import styles from "./CheckBox.module.scss";
+import React, { useEffect, useState } from "react";
 import CheckIcon from "../icons/CheckIcon";
+import styles from "./CheckBox.module.scss";
 
 export type CheckBoxProps = Omit<
   React.InputHTMLAttributes<HTMLInputElement>,

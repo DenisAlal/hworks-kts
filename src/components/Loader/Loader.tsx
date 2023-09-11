@@ -1,5 +1,7 @@
+import cn from "classnames";
 import * as React from "react";
-import "./Loader.scss";
+import styles from "./Loader.module.scss";
+
 
 export type LoaderProps = {
   size?: "s" | "m" | "l";
@@ -8,7 +10,11 @@ export type LoaderProps = {
 
 const Loader: React.FC<LoaderProps> = ({ size, className }) => {
   return (
-    <div className={`loader ${size} ${className}`}>
+    <div className={cn(styles.loader,className , {
+        [styles.s]: size === "s",
+        [styles.m]: size === "m",
+        [styles.l]: size === "l",
+    })}>
       <svg
         viewBox="0 0 60 60"
         fill="#518581"
