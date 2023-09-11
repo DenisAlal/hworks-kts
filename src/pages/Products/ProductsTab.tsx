@@ -25,30 +25,16 @@ const ProductsTab: React.FC = () => {
 
   useEffect(() => {
     const fetch = async () => {
-      let url = `https://api.escuelajs.co/api/v1/products/`;
-
-      if (reloadInput) {
-        url = url + `?title=${reloadInput}`;
-      }
-      if (
-        selectedCategory === undefined ||
-        (selectedCategory.length == 0 && reloadInput)
-      ) {
-        url = url + `&categoryId=${selectedCategory[0].key}`;
-      }
-      if (
-        selectedCategory === undefined ||
-        (selectedCategory.length !== 0 && !reloadInput)
-      ) {
-        if (selectedCategory) {
-          url = url + `?categoryId=${selectedCategory[0].key}`;
-        }
-      }
-
-      const result = await axios({
-        method: "get",
-        url: url,
-      });
+      const categoryId = selectedCategory[0] ? selectedCategory[0].key : null;
+      const result = await axios.get(
+        "https://api.escuelajs.co/api/v1/products",
+        {
+          params: {
+            title: reloadInput,
+            categoryId: categoryId,
+          },
+        },
+      );
       setCountProducts(result.data.length);
     };
     fetch();
@@ -56,29 +42,32 @@ const ProductsTab: React.FC = () => {
 
   useEffect(() => {
     const fetch = async () => {
-      let url = `https://api.escuelajs.co/api/v1/products/?limit=${productsOnPage}`;
+      let offset = null;
       if (selectedPage === 1) {
-        url = url + `&offset=0`;
+        offset = 0;
       } else if (
         Math.floor(countProducts / productsOnPage) === 1 &&
         countProducts > 9 &&
         countProducts <= 18 &&
         selectedPage === 2
       ) {
-        url = url + `&offset=${productsOnPage}`;
+        offset = productsOnPage;
       } else {
-        url = url + `&offset=${selectedPage * productsOnPage}`;
+        offset = selectedPage * productsOnPage;
       }
-      if (reloadInput) {
-        url = url + `&title=${reloadInput}`;
-      }
-      if (selectedCategory.length !== 0) {
-        url = url + `&categoryId=${selectedCategory[0].key}`;
-      }
-      const result = await axios({
-        method: "get",
-        url: url,
-      });
+
+      const categoryId = selectedCategory[0] ? selectedCategory[0].key : null;
+      const result = await axios.get(
+        "https://api.escuelajs.co/api/v1/products",
+        {
+          params: {
+            title: reloadInput,
+            categoryId: categoryId,
+            offset: offset,
+            limit: productsOnPage,
+          },
+        },
+      );
       setData(result.data);
     };
     fetch();
@@ -126,6 +115,7 @@ const ProductsTab: React.FC = () => {
   };
 
   const findTitleClick = () => {
+    setSelectedPage(1);
     setReloadInput(findInput);
   };
   const getTitle = (elements: Option[]) =>
