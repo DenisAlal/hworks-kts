@@ -1,8 +1,3 @@
-$text-secondary: #afadb5;
-$text-primary: #000000;
-$text-accent: #518581;
-$multiDropdown-bg: #ffffff;
-
 .dropdown {
   height: 52px;
   display: flex;
@@ -21,19 +16,19 @@ $multiDropdown-bg: #ffffff;
   align-items: center;
   align-self: stretch;
   height: 24px;
-  background: $multiDropdown-bg;
+  background: white;
 }
 
 .itemOption {
   line-height: 20px;
-  color: $text-primary;
+  color: var(--primaryColor);
 }
 
 .itemOption:hover {
-  color: $text-secondary;
+  color: var(--secondaryColor);
   cursor: pointer;
 }
 
 .checkedOption {
-  color: $text-accent;
+  color: var(--accentColor);
 }
