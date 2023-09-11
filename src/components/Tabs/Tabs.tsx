@@ -2,6 +2,7 @@ import cn from "classnames";
 import * as React from "react";
 import { useContext, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { aboutPath, categoriesPath, productsPath } from "../../App.tsx";
 import { AppContext } from "../../context/App.context.tsx";
 import Text from "../Text";
 import styles from "./Tabs.module.scss";
@@ -23,26 +24,26 @@ const Tabs: React.FC<TabsProps> = (props) => {
   const location = useLocation();
   const usingTabLink = (id?: number) => {
     switch (location.pathname) {
-      case "/":
+      case productsPath:
         setUsingTab(1);
         break;
-      case "/categories":
+      case categoriesPath:
         setUsingTab(2);
         break;
-      case "/about":
+      case aboutPath:
         setUsingTab(3);
         break;
     }
 
     switch (id) {
       case 1:
-        navigate("/");
+        navigate(productsPath);
         break;
       case 2:
-        navigate("/categories");
+        navigate(categoriesPath);
         break;
       case 3:
-        navigate("/about");
+        navigate(aboutPath);
         break;
     }
   };
