@@ -2,9 +2,9 @@ import * as React from "react"
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import Header from "./components/Header";
 import {AppContextProvider} from "./context/App.context.tsx";
-import ProductPage from "./pages//Products/ProductPage/ProductPage.tsx";
 import AboutTab from "./pages/About/AboutTab.tsx";
 import CategoryTab from "./pages/Category/CategoryTab.tsx";
+import ProductPage from "./pages/Products/ProductPage/ProductPage.tsx";
 import ProductsTab from "./pages/Products/ProductsTab.tsx";
 
 const App: React.FC = () => {
