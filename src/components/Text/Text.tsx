@@ -1,5 +1,6 @@
+import cn from "classnames";
 import * as React from "react";
-
+import styles from "./Text.module.scss";
 export type TextProps = {
   /** Дополнительный класс */
   className?: string;
@@ -22,73 +23,38 @@ export type TextProps = {
   /** Цвет */
   color?: "primary" | "secondary" | "accent";
   /** Максимальное кол-во строк */
-  maxLines?: number;
+  maxLines?: 1 | 2 | 3 | 4 | 5 | 6;
 };
-const primaryColor = "#000000";
-const secondaryColor = "#AFADB5";
-const accentColor = "#518581";
+
 const Text: React.FC<TextProps> = ({
   className,
   view,
   tag = "p",
-  weight,
+  weight = "normal",
   children,
   color,
   maxLines,
 }) => {
-  const styles: React.CSSProperties = {};
-  if (view) {
-    switch (view) {
-      case "button":
-        styles.fontSize = 18;
-        break;
-      case "title":
-        styles.fontSize = 44;
-        break;
-      case "p-32":
-        styles.fontSize = 32;
-        break;
-      case "p-20":
-        styles.fontSize = 20;
-        break;
-      case "p-18":
-        styles.fontSize = 18;
-        break;
-      case "p-16":
-        styles.fontSize = 16;
-        break;
-      case "p-14":
-        styles.fontSize = 14;
-        break;
-    }
-  }
-
-  if (weight) {
-    styles.fontWeight = weight;
-  }
-  if (color) {
-    switch (color) {
-      case "primary":
-        styles.color = primaryColor;
-        break;
-      case "secondary":
-        styles.color = secondaryColor;
-        break;
-      case "accent":
-        styles.color = accentColor;
-        break;
-    }
-  }
-  if (maxLines) {
-    styles.WebkitLineClamp = maxLines;
-    styles.overflow = "hidden";
-    styles.WebkitBoxOrient = "vertical";
-    styles.display = "-webkit-box";
-  }
-
   const TextComponent = tag || "p";
   return (
-    <TextComponent className={className} style={styles}>
+    <TextComponent
+      className={cn(className, {
+        [styles.title]: view === "title",
+        [styles.button]: view === "button",
+        [styles["p-44"]]: view === "p-44",
+        [styles["p-32"]]: view === "p-32",
+        [styles["p-20"]]: view === "p-20",
+        [styles["p-18"]]: view === "p-18",
+        [styles["p-16"]]: view === "p-16",
+        [styles["p-14"]]: view === "p-14",
+        [styles[weight]]: weight,
+        [styles.primary]: color === "primary",
+        [styles.secondary]: color === "secondary",
+        [styles.accent]: color === "accent",
+        [styles.maxLines]: maxLines,
+        [styles[`maxLines_${maxLines}`]]: maxLines,
+      })}
+    >
       {children}
     </TextComponent>
   );
