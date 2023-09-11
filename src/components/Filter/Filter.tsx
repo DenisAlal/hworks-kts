@@ -1,9 +1,9 @@
 import cn from "classnames";
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
-import Input from "../Input";
-import Text from "../Text";
-import ArrowDownIcon from "../icons/ArrowDownIcon";
+import Input from "components/Input";
+import Text from "components/Text";
+import ArrowDownIcon from "components/icons/ArrowDownIcon";
 
 import styles from "./Filter.module.scss";
 

@@ -1,7 +1,7 @@
 import * as React from "react";
+import PageLink from "components/Pagination/PageLink.tsx";
+import ArrowLeftIcon from "components/icons/ArrowLeftIcon";
 import { getPaginationItems } from "lib/pagination.ts";
-import ArrowLeftIcon from "../icons/ArrowLeftIcon";
-import PageLink from "./PageLink";
 import styles from "./Pagination.module.scss";
 
 export type TabsProps = {

@@ -23,7 +23,8 @@
       "assets": ["assets/*"],
       "utils": ["utils/*"],
       "pages": ["pages/*"],
-      "lib": ["lib/*"]
+      "lib": ["lib/*"],
+      "context": ["context/*"]
     }
   },
   "include": ["src"],

@@ -1,6 +1,7 @@
 import cn from "classnames";
-import React, { useEffect, useState } from "react";
-import CheckIcon from "../icons/CheckIcon";
+import * as React from "react";
+import { useEffect, useState } from "react";
+import CheckIcon from "components/icons/CheckIcon";
 import styles from "./CheckBox.module.scss";
 
 export type CheckBoxProps = Omit<

@@ -2,9 +2,9 @@ import cn from "classnames";
 import * as React from "react";
 import { useContext, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import Text from "components/Text";
+import { AppContext } from "context/App.context.tsx";
 import { aboutPath, categoriesPath, productsPath } from "../../App.tsx";
-import { AppContext } from "../../context/App.context.tsx";
-import Text from "../Text";
 import styles from "./Tabs.module.scss";
 
 export type TabItem = {

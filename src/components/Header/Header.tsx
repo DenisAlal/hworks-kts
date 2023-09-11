@@ -2,9 +2,9 @@ import cn from "classnames";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import Tabs, { TabItem } from "components/Tabs";
-import Avatar from "../icons/AvatarIcon";
-import Cart from "../icons/CartIcon";
-import Logo from "../icons/LogoIcon";
+import Avatar from "components/icons/AvatarIcon";
+import Cart from "components/icons/CartIcon";
+import Logo from "components/icons/LogoIcon";
 import styles from "./Header.module.scss";
 
 export type HeaderProps = {

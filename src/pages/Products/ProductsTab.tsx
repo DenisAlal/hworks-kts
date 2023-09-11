@@ -2,12 +2,12 @@ import axios from "axios";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "../../components/Button";
-import Card from "../../components/Card";
-import Filter, { Option } from "../../components/Filter";
-import Input from "../../components/Input";
-import Pagination from "../../components/Pagination";
-import Text from "../../components/Text";
+import Button from "components/Button";
+import Card from "components/Card";
+import Filter, { Option } from "components/Filter";
+import Input from "components/Input";
+import Pagination from "components/Pagination";
+import Text from "components/Text";
 import { Products } from "./ProductsTab.interface.ts";
 import styles from "./ProductsTab.module.scss";
 
