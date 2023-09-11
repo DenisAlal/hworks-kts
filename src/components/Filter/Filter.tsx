@@ -130,7 +130,7 @@ const Filter: React.FC<MultiDropdownProps> = ({
         <div className={styles.optionsBlock}>
           {filteredOptions.map((option) => (
             <div key={option.key} className={styles.option}>
-              <div key={option.key} onClick={() => handleOptionClick(option)}>
+              <div onClick={() => handleOptionClick(option)}>
                 <Text
                   weight={"normal"}
                   tag={"p"}
