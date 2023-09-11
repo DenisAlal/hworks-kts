@@ -8,12 +8,16 @@ $checkbox-check: #518581;
 $checkbox-check-disabled: #00000033;
 $checkbox-check-hover: #518581;
 
+@mixin boxSize($size) {
+  height: $size;
+  width: $size;
+}
+
 .checkboxContainer {
   position: relative;
   display: flex;
   align-items: center;
-  width: 40px;
-  height: 40px;
+  @include boxSize(40px);
   background: $checkbox-bg;
 }
 
@@ -27,8 +31,7 @@ $checkbox-check-hover: #518581;
 
 .borderBox {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  @include boxSize(100%);
   background: transparent;
 }
 
@@ -39,16 +42,14 @@ $checkbox-check-hover: #518581;
 .checkbox {
   position: absolute;
   opacity: 0;
-  width: 100%;
-  height: 100%;
+  @include boxSize(100%);
   cursor: pointer;
 }
 
 .arrowIcon {
   color: gray;
   cursor: pointer;
-  width: 100%;
-  height: 100%;
+  @include boxSize(100%);
   stroke: transparent;
 }
 
