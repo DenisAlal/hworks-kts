@@ -2,11 +2,11 @@ import axios from "axios";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Button from "components/Button";
-import Card from "components/Card";
-import Text from "components/Text";
-import ArrowDownIcon from "components/icons/ArrowDownIcon";
-import ArrowLeftIcon from "components/icons/ArrowLeftIcon";
+import Button from "../../components/Button";
+import Card from "../../components/Card";
+import Text from "../../components/Text";
+import ArrowDownIcon from "../../components/icons/ArrowDownIcon";
+import ArrowLeftIcon from "../../components/icons/ArrowLeftIcon";
 import { Product } from "./ProductPage.interface.ts";
 import styles from "./ProductPage.module.scss";
 

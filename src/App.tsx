@@ -4,8 +4,9 @@ import Header from "components/Header";
 import { AppContextProvider } from "context/App.context.tsx";
 import AboutTab from "pages/About/AboutTab.tsx";
 import CategoryTab from "pages/Category/CategoryTab.tsx";
-import ProductPage from "pages/Products/ProductPage/ProductPage.tsx";
 import ProductsTab from "pages/Products/ProductsTab.tsx";
+import ProductPage from "./pages/ProductPage/ProductPage.tsx";
+
 
 export const productsPath = "/";
 export const categoriesPath = "/categories";
