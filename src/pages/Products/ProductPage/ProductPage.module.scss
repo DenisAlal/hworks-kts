@@ -17,7 +17,6 @@
       display: flex;
       flex-direction: row;
 
-
       .imageScroll {
         position: relative;
         width: 600px;
@@ -103,26 +102,24 @@
           }
           .buyButtons {
             margin-top: var(--spase-xl);
-              .buttonCart {
-                margin-left: var(--spase-xl);
-                border: solid 1px #AFADB5;
-                background: white;
-                color: black;
-              }
+            .buttonCart {
+              margin-left: var(--spase-xl);
+              border: solid 1px #afadb5;
+              background: white;
+              color: black;
+            }
             .buttonCart:hover {
               background: rgba(134, 170, 167, 0.34);
             }
           }
         }
       }
-
     }
     @media (max-width: 970px) {
       .mainContent {
         flex-direction: column;
         .imageScroll {
           width: 100%;
-
         }
         .productContent {
           flex-direction: column;
@@ -131,10 +128,7 @@
             margin-top: var(--spase-xxxl);
           }
         }
-
-
       }
-
     }
     .relatedItemsBlock {
       font-size: 32px;
@@ -152,7 +146,6 @@
         justify-content: space-evenly;
         align-items: flex-start;
         gap: (var(--spase-xxl));
-
       }
 
       .divCard {

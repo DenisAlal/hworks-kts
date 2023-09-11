@@ -1,5 +1,5 @@
 $primaryColor: #000000;
-$secondaryColor: #AFADB5;
+$secondaryColor: #afadb5;
 $accentColor: #518581;
 
 .pagination {
@@ -9,15 +9,12 @@ $accentColor: #518581;
 }
 .pagination > button {
   background: transparent;
-  border: none
-
+  border: none;
 }
 .pagination > button:hover {
-  background: rgba(81, 133, 129, 0.2);;
+  background: rgba(81, 133, 129, 0.2);
 }
 .nextArrow {
-  transform: rotate(180deg) ;
+  transform: rotate(180deg);
   fill: $secondaryColor;
 }
-
-

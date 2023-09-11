@@ -1,1 +1,1 @@
-# Начинающий React разработчик. home works E-commerce 
+# Начинающий React разработчик. home works E-commerce

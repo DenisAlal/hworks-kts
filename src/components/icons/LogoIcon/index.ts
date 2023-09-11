@@ -1,2 +1,2 @@
-export { default } from './Logo.tsx';
-export * from './Logo.tsx';
+export { default } from "./Logo.tsx";
+export * from "./Logo.tsx";

@@ -1,2 +1,2 @@
-export { default } from './Avatar.tsx';
-export * from './Avatar.tsx';
+export { default } from "./Avatar.tsx";
+export * from "./Avatar.tsx";

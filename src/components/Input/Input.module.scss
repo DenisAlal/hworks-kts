@@ -1,17 +1,16 @@
-$input-bg: #FFFFFF;
-$input-bg-disabled: #FFFFFF;
-$input-bg-focus: #FFFFFF;
-$input-border: #FFFFFF;
-$input-border-disabled: #FFFFFF;
+$input-bg: #ffffff;
+$input-bg-disabled: #ffffff;
+$input-bg-focus: #ffffff;
+$input-border: #ffffff;
+$input-border-disabled: #ffffff;
 $input-border-focus: #518581;
-$input-placeholder: #AFADB5;
+$input-placeholder: #afadb5;
 $input-text: #000000;
 $input-text-disabled: #00000033;
 $input-text-focus: #000000;
 
 .inputComponent {
-
-  background: #FFF;
+  background: #fff;
   display: flex;
   align-items: stretch;
   border: 1px solid $input-border;
@@ -42,9 +41,9 @@ $input-text-focus: #000000;
   }
 }
 
-.inputComponentFocus  {
+.inputComponentFocus {
   border: 1px solid $input-border-focus;
 }
-.inputComponentFocus  {
+.inputComponentFocus {
   border: 1px solid $input-border-focus;
 }

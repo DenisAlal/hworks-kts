@@ -1,5 +1,5 @@
 $accentColor: #518581;
-$secondaryColor: #AFADB5;
+$secondaryColor: #afadb5;
 $primaryColor: #151411;
 
 .page-link {
@@ -8,12 +8,10 @@ $primaryColor: #151411;
   cursor: pointer;
 }
 
-
 .page-link:focus {
   color: $accentColor;
   background-color: transparent;
 }
-
 
 .page-link:focus {
   z-index: 3;
@@ -34,4 +32,3 @@ $primaryColor: #151411;
   stroke: $secondaryColor;
   pointer-events: none;
 }
-

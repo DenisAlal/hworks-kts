@@ -1,5 +1,5 @@
 $primaryColor: #000000;
-$secondaryColor: #AFADB5;
+$secondaryColor: #afadb5;
 $accentColor: #518581;
 
 .header {
@@ -10,7 +10,6 @@ $accentColor: #518581;
   grid-template-columns: auto auto auto;
   align-items: center;
   justify-content: space-between;
-
 }
 
 .logo {
@@ -26,7 +25,6 @@ $accentColor: #518581;
   opacity: 0.7;
 }
 
-
 .menuIcons {
   width: 24px;
   height: 24px;
@@ -35,7 +33,6 @@ $accentColor: #518581;
 .tabs {
   grid-area: tabs;
 }
-
 
 .buttons {
   width: 130px;
