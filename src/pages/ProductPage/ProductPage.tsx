@@ -16,6 +16,7 @@ const ProductPage: React.FC = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { id } = useParams();
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetch = async () => {
       const result = await axios({
@@ -26,6 +27,7 @@ const ProductPage: React.FC = () => {
     };
     fetch();
   }, [id]);
+
   useEffect(() => {
     if (data) {
       const fetch = async () => {
