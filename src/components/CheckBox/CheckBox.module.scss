@@ -1,3 +1,4 @@
+@import "styles/mixins";
 $checkbox-bg: #ffffff;
 $checkbox-bg-disabled: #ffffff80;
 $checkbox-bg-hover: #ffffff;
@@ -8,10 +9,6 @@ $checkbox-check: #518581;
 $checkbox-check-disabled: #00000033;
 $checkbox-check-hover: #518581;
 
-@mixin boxSize($size) {
-  height: $size;
-  width: $size;
-}
 
 .checkboxContainer {
   position: relative;

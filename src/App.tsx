@@ -1,15 +1,14 @@
 import * as React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "components/Header";
+import {aboutPath, categoriesPath, productsPath} from "config/pathLinks.ts";
 import { AppContextProvider } from "context/App.context.tsx";
 import AboutTab from "pages/About/AboutTab.tsx";
 import CategoryTab from "pages/Category/CategoryTab.tsx";
+import ProductPage from "pages/ProductPage/ProductPage.tsx";
 import ProductsTab from "pages/Products/ProductsTab.tsx";
-import ProductPage from "./pages/ProductPage/ProductPage.tsx";
 
-export const productsPath = "/";
-export const categoriesPath = "/categories";
-export const aboutPath = "/about";
+
 
 const App: React.FC = () => {
   return (

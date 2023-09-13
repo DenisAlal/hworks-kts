@@ -3,8 +3,8 @@ import * as React from "react";
 import { useContext, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Text from "components/Text";
+import {aboutPath, categoriesPath, productsPath} from "config/pathLinks.ts";
 import { AppContext } from "context/App.context.tsx";
-import { aboutPath, categoriesPath, productsPath } from "../../App.tsx";
 import styles from "./Tabs.module.scss";
 
 export type TabItem = {
