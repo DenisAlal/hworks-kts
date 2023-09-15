@@ -36,7 +36,7 @@ class ProductStore {
       );
       this.setProductData(response.data);
     } catch (error) {
-      console.error(error);
+      alert(error)
     }
   };
   getRelativeProductsData = async (
@@ -78,7 +78,7 @@ class ProductStore {
     func();
   };
   addToCart = (id: Products) => {
-    console.log(id.id);
+    alert(`Товар с id: ${id.id} добавлен в корзину`)
   };
   setProductData = (productData: Products) => {
     this.productData = productData;
