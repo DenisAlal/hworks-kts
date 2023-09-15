@@ -1,98 +1,23 @@
-import axios from "axios";
-import * as React from "react";
-import { useEffect, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "components/Button";
 import Card from "components/Card";
 import Text from "components/Text";
 import ArrowDownIcon from "components/icons/ArrowDownIcon";
 import ArrowLeftIcon from "components/icons/ArrowLeftIcon";
-import { Product } from "./ProductPage.interface.ts";
+import productStore from "store/ProductStore";
 import styles from "./ProductPage.module.scss";
 
-const ProductPage: React.FC = () => {
-  const [data, setData] = useState<Product>();
-  const [dataRelatedItems, setDataRelatedItems] = useState<Product[]>();
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+const ProductPage = observer(() => {
+  const data = productStore.productData;
+  const relativeData = productStore.relativeProductsData;
   const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetch = async () => {
-      const result = await axios({
-        method: "get",
-        url: `https://api.escuelajs.co/api/v1/products/${id}`,
-      });
-      setData(result.data);
-    };
-    fetch();
+    productStore.getProductData(id).then();
   }, [id]);
-
-  useEffect(() => {
-    if (data) {
-      const fetch = async () => {
-        let url = `https://api.escuelajs.co/api/v1/products/`;
-        if (data.category.id !== 0) {
-          url = url + `?categoryId=${data.category.id}`;
-        }
-        const result = await axios({
-          method: "get",
-          url: url,
-        });
-        if (id) {
-          const updatedData = result.data.filter(
-            (item: Product) => item.id !== Number(id),
-          );
-          const randomItems: Product[] = getRandomItems(updatedData, 3);
-          setDataRelatedItems(randomItems);
-        } else {
-          setDataRelatedItems(result.data);
-        }
-      };
-      fetch();
-    }
-  }, [data]);
-
-  const getRandomItems = (data: Product[], count: number): Product[] => {
-    const randomItems: Product[] = [];
-    const dataCopy = [...data];
-
-    for (let i = 0; i < count; i++) {
-      const randomIndex = Math.floor(Math.random() * dataCopy.length);
-      const randomItem = dataCopy.splice(randomIndex, 1)[0];
-      randomItems.push(randomItem);
-    }
-
-    return randomItems;
-  };
-
-  const handleNextImage = () => {
-    if (data) {
-      setCurrentImageIndex(
-        (prevIndex) => (prevIndex + 1) % data?.images.length,
-      );
-    }
-  };
-
-  const handlePrevImage = () => {
-    if (data) {
-      setCurrentImageIndex(
-        (prevIndex) =>
-          (prevIndex - 1 + data?.images.length) % data?.images.length,
-      );
-    }
-  };
-  const ImageView = (props: { image: string | undefined }) => {
-    return <img src={props.image} alt="image" className={styles.imageScroll} />;
-  };
-
-  const handleButtonClick = (e: { stopPropagation: () => void }) => {
-    e.stopPropagation();
-  };
-
-  const goToPage = (id: number) => {
-    navigate(`/${id}`);
-  };
 
   return (
     <div className={styles.container}>
@@ -106,10 +31,17 @@ const ProductPage: React.FC = () => {
         <div className={styles.mainContent}>
           <div className={styles.imageScroll}>
             <div className={styles.imageViewWrapper}>
-              <ImageView image={data?.images[currentImageIndex]} />
+              <img
+                src={data?.images[productStore.imageCounter]}
+                alt="image"
+                className={styles.imageScroll}
+              />
             </div>
             <div className={styles.buttonsBlock}>
-              <button className={styles.circle} onClick={handlePrevImage}>
+              <button
+                className={styles.circle}
+                onClick={productStore.prevImage}
+              >
                 <ArrowDownIcon
                   color={"secondary"}
                   width={30}
@@ -117,7 +49,10 @@ const ProductPage: React.FC = () => {
                   className={styles.prevImage}
                 />
               </button>
-              <button className={styles.circle} onClick={handleNextImage}>
+              <button
+                className={styles.circle}
+                onClick={productStore.nextImage}
+              >
                 <ArrowDownIcon
                   color={"secondary"}
                   width={30}
@@ -171,7 +106,7 @@ const ProductPage: React.FC = () => {
             Related Items
           </Text>
           <div className={styles.products}>
-            {dataRelatedItems?.map((item) => (
+            {relativeData.map((item) => (
               <div key={item.id} className={styles.divCard}>
                 <Card
                   image={item.images[0]}
@@ -181,9 +116,18 @@ const ProductPage: React.FC = () => {
                   contentSlot={`$${item.price}`}
                   className={styles.card}
                   actionSlot={
-                    <Button onClick={handleButtonClick}>Add to Cart</Button>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        productStore.addToCart(item);
+                      }}
+                    >
+                      Add to Cart
+                    </Button>
                   }
-                  onClick={() => goToPage(item.id)}
+                  onClick={() =>
+                    productStore.goToPage(() => navigate(`/${item.id}`))
+                  }
                 />
               </div>
             ))}
@@ -192,5 +136,5 @@ const ProductPage: React.FC = () => {
       </div>
     </div>
   );
-};
+});
 export default ProductPage;

@@ -8,7 +8,7 @@ import Filter, { Option } from "components/Filter";
 import Input from "components/Input";
 import Pagination from "components/Pagination";
 import Text from "components/Text";
-import { Products } from "./ProductsTab.interface.ts";
+import { Products } from "interfaces/ProductsTab.interface.ts";
 import styles from "./ProductsTab.module.scss";
 
 const ProductsTab: React.FC = () => {
@@ -42,7 +42,7 @@ const ProductsTab: React.FC = () => {
 
   useEffect(() => {
     const fetch = async () => {
-      let offset = null;
+      let offset;
       if (selectedPage === 1) {
         offset = 0;
       } else if (
