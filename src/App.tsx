@@ -7,7 +7,6 @@ import AboutTab from "pages/About/AboutTab.tsx";
 import CategoryTab from "pages/Category/CategoryTab.tsx";
 import ProductPage from "pages/ProductPage/ProductPage.tsx";
 import ProductsTab from "pages/Products/ProductsTab.tsx";
-
 const App: React.FC = () => {
   return (
     <AppContextProvider>

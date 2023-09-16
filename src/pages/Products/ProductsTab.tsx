@@ -1,125 +1,46 @@
-import axios from "axios";
-import * as React from "react";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { toJS } from "mobx";
+import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Button from "components/Button";
 import Card from "components/Card";
-import Filter, { Option } from "components/Filter";
+import Filter from "components/Filter";
 import Input from "components/Input";
 import Pagination from "components/Pagination";
 import Text from "components/Text";
-import { Products } from "interfaces/ProductsTab.interface.ts";
+import productsStore, { Option } from "store/ProductsStore";
+import { useQueryParamsStoreInit } from "store/RootStore/hooks/useQueryParamsStoreInit.ts";
 import styles from "./ProductsTab.module.scss";
-
-const ProductsTab: React.FC = () => {
-  const [data, setData] = useState<Products[]>();
-  const [dataCategory, setDataCategory] = useState<Option[]>();
-  const [selectedCategory, setSelectedCategory] = useState<Option[]>([]);
-  const [countProducts, setCountProducts] = useState(0);
-  const [findInput, setFindInput] = useState("");
-  const [reloadInput, setReloadInput] = useState("");
-  const [selectedPage, setSelectedPage] = useState(1);
-  const [pageCount, setPageCount] = useState(0);
+const ProductsTab = observer(() => {
   const navigate = useNavigate();
-  const productsOnPage = 9;
+  const store = productsStore;
+  useQueryParamsStoreInit();
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    store.getProducts().then();
+  }, [
+    store.inputClickButton,
+    store.counterProductsData,
+    store.valueUserOptions,
+    store.selectedPage,
+  ]);
 
   useEffect(() => {
-    const fetch = async () => {
-      const categoryId = selectedCategory[0] ? selectedCategory[0].key : null;
-      const result = await axios.get(
-        "https://api.escuelajs.co/api/v1/products",
-        {
-          params: {
-            title: reloadInput,
-            categoryId: categoryId,
-          },
-        },
-      );
-      setCountProducts(result.data.length);
-    };
-    fetch();
-  }, [reloadInput, selectedCategory]);
-
-  useEffect(() => {
-    const fetch = async () => {
-      let offset;
-      if (selectedPage === 1) {
-        offset = 0;
-      } else if (
-        Math.floor(countProducts / productsOnPage) === 1 &&
-        countProducts > 9 &&
-        countProducts <= 18 &&
-        selectedPage === 2
-      ) {
-        offset = productsOnPage;
-      } else {
-        offset = selectedPage * productsOnPage;
-      }
-
-      const categoryId = selectedCategory[0] ? selectedCategory[0].key : null;
-      const result = await axios.get(
-        "https://api.escuelajs.co/api/v1/products",
-        {
-          params: {
-            title: reloadInput,
-            categoryId: categoryId,
-            offset: offset,
-            limit: productsOnPage,
-          },
-        },
-      );
-      setData(result.data);
-    };
-    fetch();
-  }, [countProducts, reloadInput, selectedCategory, selectedPage]);
-
-  useEffect(() => {
-    if (countProducts) {
-      if (
-        Math.floor(countProducts / productsOnPage) === 0 &&
-        countProducts > 0
-      ) {
-        setPageCount(1);
-      } else if (
-        Math.floor(countProducts / productsOnPage) === 1 &&
-        countProducts > 9
-      ) {
-        setPageCount(2);
-      } else {
-        setPageCount(Math.floor(countProducts / productsOnPage));
-      }
+    const newParams = new URLSearchParams(searchParams);
+    const { selectedPage, inputValue, valueUserOptions } = store;
+    newParams.set("page", `${selectedPage}`);
+    if (inputValue !== "") {
+      newParams.set("title", `${inputValue}`);
+    } else {
+      newParams.delete("title");
     }
-  }, [countProducts]);
-
-  useEffect(() => {
-    const fetch = async () => {
-      const response = await axios.get(
-        "https://api.escuelajs.co/api/v1/categories",
-      );
-      const modifiedData = response.data.map(
-        (item: { id: { toString: () => number }; name: string }) => ({
-          key: item.id.toString(),
-          value: item.name,
-        }),
-      );
-      setDataCategory(modifiedData);
-    };
-    fetch();
-  }, []);
-
-  const goToPage = (id: number) => {
-    navigate(`/${id}`);
-  };
-  const handleButtonClick = (e: { stopPropagation: () => void }) => {
-    e.stopPropagation();
-  };
-
-  const findTitleClick = () => {
-    setSelectedPage(1);
-    setReloadInput(findInput);
-  };
-  const getTitle = (elements: Option[]) =>
-    elements.map((el: Option) => el.value).join();
+    if (valueUserOptions.length > 0) {
+      const categoryId = valueUserOptions[0] ? valueUserOptions[0].key : null;
+      newParams.set("categoryId", `${categoryId}`);
+    }
+    setSearchParams(newParams);
+  }, [store.selectedPage, store.inputValue, store.valueUserOptions]);
 
   return (
     <div className={styles.container}>
@@ -147,27 +68,27 @@ const ProductsTab: React.FC = () => {
       <div className={styles.filterBlock}>
         <div className={styles.findInputBlock}>
           <Input
-            value={findInput}
-            onChange={setFindInput}
+            value={store.inputValue}
+            onChange={store.setValueInput}
             placeholder={"Search product"}
             className={styles.findInput}
           />
           <Button
             className={styles.findButton}
-            onClick={() => findTitleClick()}
+            onClick={() => store.setClickInputSearchButton()}
           >
             Find now
           </Button>
         </div>
         <div>
-          {dataCategory && (
+          {store.categories && (
             <Filter
-              options={dataCategory}
-              value={selectedCategory}
+              options={toJS(store.categories)}
+              value={store.valueUserOptions}
               onChange={(newValue: Option[]) => {
-                setSelectedCategory(newValue);
+                store.setValueOptions(newValue);
               }}
-              getTitle={getTitle}
+              getTitle={store.getTitle}
               ifValueEmpty={"Filter"}
               className={styles.filterDropDown}
             />
@@ -183,12 +104,12 @@ const ProductsTab: React.FC = () => {
       >
         Total Product
         <Text view={"p-20"} tag={"span"} color={"accent"} weight={"bold"}>
-          {countProducts}
+          {store.counterProductsData}
         </Text>
       </Text>
 
       <div className={styles.products}>
-        {data?.map((item) => (
+        {store.productsData?.map((item) => (
           <div key={item.id} className={styles.divCard}>
             <Card
               image={item.images[0]}
@@ -198,24 +119,31 @@ const ProductsTab: React.FC = () => {
               contentSlot={`$${item.price}`}
               className={styles.card}
               actionSlot={
-                <Button onClick={handleButtonClick}>Add to Cart</Button>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    store.addToCart(item);
+                  }}
+                >
+                  Add to Cart
+                </Button>
               }
-              onClick={() => goToPage(item.id)}
+              onClick={() => store.runFunc(() => navigate(`/${item.id}`))}
             />
           </div>
         ))}
       </div>
       <div className={styles.paginationBlock}>
-        {data && countProducts !== 0 && (
+        {store.productsData && store.pagesCountValue !== 0 && (
           <Pagination
-            currentPage={selectedPage}
-            lastPage={pageCount}
+            currentPage={store.selectedPage}
+            lastPage={store.pagesCountValue}
             maxLength={5}
-            setCurrentPage={setSelectedPage}
+            setCurrentPage={store.setSelectedPage}
           />
         )}
       </div>
     </div>
   );
-};
+});
 export default ProductsTab;
