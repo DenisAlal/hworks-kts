@@ -20,12 +20,13 @@
       "components": ["components/*"],
       "config": ["config/*"],
       "styles": ["styles/*"],
+      "assets": ["assets/*"],
       "utils": ["utils/*"],
-      "pages": ["pages/*"]
+      "pages": ["pages/*"],
+      "lib": ["lib/*"],
+      "context": ["context/*"]
     }
   },
-  "include": [
-    "src"
-  ],
-  "references": [{ "path": "./tsconfig.node.json"}]
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

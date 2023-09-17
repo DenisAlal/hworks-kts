@@ -1,0 +1,63 @@
+@import "styles/mixins";
+$checkbox-bg: #ffffff;
+$checkbox-bg-disabled: #ffffff80;
+$checkbox-bg-hover: #ffffff;
+$checkbox-border: #ffffff;
+$checkbox-border-disabled: #ffffff00;
+$checkbox-border-hover: #518581;
+$checkbox-check: #518581;
+$checkbox-check-disabled: #00000033;
+$checkbox-check-hover: #518581;
+
+
+.checkboxContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  @include boxSize(40px);
+  background: $checkbox-bg;
+}
+
+.checkboxContainer:hover:not(:has(.checkbox[disabled])) {
+  background: $checkbox-bg-hover;
+}
+
+.checkboxContainerDisabled {
+  background: $checkbox-bg-disabled;
+}
+
+.borderBox {
+  position: absolute;
+  @include boxSize(100%);
+  background: transparent;
+}
+
+.borderBoxHover {
+  border: solid 1px $checkbox-border-hover;
+}
+
+.checkbox {
+  position: absolute;
+  opacity: 0;
+  @include boxSize(100%);
+  cursor: pointer;
+}
+
+.arrowIcon {
+  color: gray;
+  cursor: pointer;
+  @include boxSize(100%);
+  stroke: transparent;
+}
+
+.checkbox:checked + .arrowIcon {
+  stroke: $checkbox-check;
+}
+
+.checkbox:hover + .arrowIcon {
+  stroke: $checkbox-check-hover;
+}
+
+.checkbox:disabled.checkbox:checked + .arrowIcon {
+  stroke: $checkbox-check-disabled;
+}
