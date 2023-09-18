@@ -16,7 +16,7 @@ import styles from "./ProductsTab.module.scss";
 
 const ProductsTab = observer(() => {
   const navigate = useNavigate();
-  const store = useLocalStore(() => ProductsStore);
+  const store = useLocalStore(() => new ProductsStore());
   useQueryParamsStoreInit();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -72,12 +72,7 @@ const ProductsTab = observer(() => {
     store.setClickInputSearchButton();
   }, [store]);
 
-  const goToProduct = useCallback(
-    (id: number) => {
-      store.runFunc(() => navigate(`/${id}`));
-    },
-    [navigate, store],
-  );
+
 
   return (
     <div className={styles.container}>
@@ -105,7 +100,7 @@ const ProductsTab = observer(() => {
       <div className={styles.filterBlock}>
         <div className={styles.findInputBlock}>
           <Input
-            value={store.inputValue ? store.inputValue : ""}
+            value={store.inputValue ?? ""}
             onChange={store.setValueInput}
             placeholder={"Search product"}
             className={styles.findInput}
@@ -157,7 +152,7 @@ const ProductsTab = observer(() => {
                   Add to Cart
                 </Button>
               }
-              onClick={() => goToProduct(item.id)}
+              onClick={() => store.runFunc(() => navigate(`/${item.id}`))}
             />
           </div>
         ))}

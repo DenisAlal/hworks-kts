@@ -8,7 +8,7 @@ import { useLocalStore } from "utils/useLocalStore.ts";
 import styles from "./CategoryTab.module.scss";
 
 const CategoryTab = observer(() => {
-  const categoryStore = useLocalStore(() => CategoryStore);
+    const categoryStore = useLocalStore(() => new CategoryStore());
   useEffect(() => {
     categoryStore.getCategoryData();
   }, [categoryStore]);

@@ -238,4 +238,4 @@ class ProductsStore {
   updateFilter = () => {};
 }
 
-export default new ProductsStore();
+export default ProductsStore;

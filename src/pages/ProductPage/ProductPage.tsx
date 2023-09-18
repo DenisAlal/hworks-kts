@@ -12,7 +12,7 @@ import { useLocalStore } from "utils/useLocalStore.ts";
 import styles from "./ProductPage.module.scss";
 
 const ProductPage = observer(() => {
-  const productStore = useLocalStore(() => ProductStore);
+  const productStore = useLocalStore(() => new ProductStore());
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -34,12 +34,6 @@ const ProductPage = observer(() => {
       productStore.addToCart(item);
     },
     [productStore],
-  );
-  const goToProduct = useCallback(
-    (id: number) => {
-      productStore.goToPage(() => navigate(`/${id}`));
-    },
-    [navigate, productStore],
   );
 
   return (
@@ -139,7 +133,7 @@ const ProductPage = observer(() => {
                       Add to Cart
                     </Button>
                   }
-                  onClick={() => goToProduct(item.id)}
+                  onClick={() => productStore.goToPage(() => navigate(`/${id}`))}
                 />
               </div>
             ))}

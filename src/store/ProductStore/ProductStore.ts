@@ -116,4 +116,4 @@ class ProductStore {
   };
 }
 
-export default new ProductStore();
+export default ProductStore;

@@ -36,4 +36,4 @@ class CategoryStore {
   };
 }
 
-export default new CategoryStore();
+export default CategoryStore;
