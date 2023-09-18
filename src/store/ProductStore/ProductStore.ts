@@ -1,13 +1,13 @@
 import axios from "axios";
-import { action, autorun, computed, makeObservable, observable } from "mobx";
-import { Products } from "interfaces/ProductsTab.interface.ts";
+import { action, computed, makeObservable, observable } from "mobx";
+import { Meta } from "utils/Meta.ts";
 import { log } from "utils/log.ts";
-import { Meta } from "../../utils/Meta.ts";
+import { normalizeProducts, ProductsApi, ProductsModel } from "../models";
 
 type PrivateFields = "_meta";
 class ProductStore {
-  productData: Products | undefined;
-  relativeProductsData: Products[] = [];
+  productData: ProductsModel | undefined;
+  relativeProductsData: ProductsModel[] = [];
   imageCounter: number = 0;
   private _meta: Meta = Meta.initial;
   constructor() {
@@ -26,15 +26,6 @@ class ProductStore {
       nextImage: action,
       prevImage: action,
     });
-
-    autorun(() => {
-      if (this.productData?.id && this.productData?.category?.id) {
-        this.getRelativeProductsData(
-          String(this.productData.id),
-          this.productData.category.id,
-        );
-      }
-    });
   }
   get meta(): Meta {
     return this._meta;
@@ -44,9 +35,9 @@ class ProductStore {
     await axios
       .get(`https://api.escuelajs.co/api/v1/products/${id}`)
       .then((response) => {
-        this.setProductData(response.data);
+        this.setProductData(normalizeProducts(response.data));
       })
-      .catch((error) => log(error()));
+      .catch(log);
   };
   getRelativeProductsData = async (
     id: string | undefined,
@@ -60,24 +51,28 @@ class ProductStore {
         },
       })
       .then((response) => {
+        const normalizedResponse = response.data.map((item: ProductsApi) =>
+          normalizeProducts(item),
+        );
         if (id) {
-          const updatedData = response.data.filter(
-            (item: Products) => item.id !== Number(id),
+          const updatedData = normalizedResponse.filter(
+            (item: ProductsModel) => item.id !== Number(id),
           );
-          const randomItems: Products[] = this.getRandomItems(updatedData, 3);
+          const randomItems: ProductsModel[] = this.getRandomItems(
+            updatedData,
+            3,
+          );
           this.setRelativeProductsData(randomItems);
         } else {
-          this.setRelativeProductsData(response.data);
+          this.setRelativeProductsData(normalizedResponse);
         }
         this._meta = Meta.success;
       })
-      .catch((error) => {
-        log(error);
-      });
+      .catch(log);
   };
 
-  getRandomItems = (data: Products[], count: number): Products[] => {
-    const randomItems: Products[] = [];
+  getRandomItems = (data: ProductsModel[], count: number): ProductsModel[] => {
+    const randomItems: ProductsModel[] = [];
     const dataCopy = [...data];
 
     for (let i = 0; i < count; i++) {
@@ -90,11 +85,15 @@ class ProductStore {
   goToPage = (func: () => void) => {
     func();
   };
-  addToCart = (id: Products) => {
+  addToCart = (id: ProductsModel) => {
     alert(`Товар с id: ${id.id} добавлен в корзину`);
   };
-  setProductData = (productData: Products) => {
+  setProductData = (productData: ProductsModel) => {
     this.productData = productData;
+    this.getRelativeProductsData(
+      String(this.productData.id),
+      this.productData.category.id,
+    );
   };
   nextImage = () => {
     if (this.productData) {
@@ -112,7 +111,7 @@ class ProductStore {
           : this.imageCounter - 1;
     }
   };
-  setRelativeProductsData = (relativeProductsData: Products[]) => {
+  setRelativeProductsData = (relativeProductsData: ProductsModel[]) => {
     this.relativeProductsData = relativeProductsData;
   };
 }

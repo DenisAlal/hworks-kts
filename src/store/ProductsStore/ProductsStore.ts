@@ -1,36 +1,30 @@
 import axios from "axios";
-import {
-  action,
-  autorun,
-  computed,
-  makeObservable,
-  observable,
-  reaction,
-} from "mobx";
-import { Products } from "interfaces/ProductsTab.interface.ts";
+import { action, computed, makeObservable, observable, reaction } from "mobx";
+import { Option } from "components/Filter";
 import { Meta } from "utils/Meta.ts";
 import rootStore from "../RootStore";
+import {
+  CategoryAPI,
+  normalizeCategory,
+  normalizeProducts,
+  ProductsApi,
+  ProductsModel,
+} from "../models";
 
-export type Option = {
-  key: string;
-  value: string;
-};
 type PrivateFields = "_meta" | "_setProductsCounterData";
 
 class ProductsStore {
   private _productsOnPage = 9;
   private _meta: Meta = Meta.initial;
-  productsData: Products[] = [];
+  productsData: ProductsModel[] = [];
   counterProductsData: number = 0;
   categories: Option[] = [];
   valueOptions: Option[] = [];
-  inputValue: string = "";
+  inputValue: string | undefined;
   valueUserOptions: Option[] = [];
-  inputClickButton: string = "";
+  inputClickButton: string | undefined = "";
   pagesCountValue = 0;
   selectedPage: number = 1;
-  isLoaded = true;
-
   constructor() {
     makeObservable<ProductsStore, PrivateFields>(this, {
       _meta: observable,
@@ -42,7 +36,6 @@ class ProductsStore {
       counterProductsData: observable,
       selectedPage: observable,
       valueUserOptions: observable,
-      isLoaded: observable,
       meta: computed,
       getCategories: action,
       getProducts: action,
@@ -56,17 +49,19 @@ class ProductsStore {
       addToCart: action,
       runFunc: action,
       pageCounter: action,
+      updateFilter: action,
     });
-    autorun(() => {
-      if (this.categories.length === 0) {
-        this.getCategories();
-        this.getProducts();
-      }
-    });
+
     reaction(
       () => this.counterProductsData,
       (counterProductsData) => {
         this.pageCounter(counterProductsData);
+      },
+    );
+    reaction(
+      () => this.categories,
+      () => {
+        this.getProducts();
       },
     );
   }
@@ -117,6 +112,7 @@ class ProductsStore {
         : null;
     }
     let title = "";
+
     if (rootStore.query.getParam("title")) {
       const newTitle = rootStore.query.getParam("title");
       if (newTitle !== undefined) {
@@ -124,7 +120,9 @@ class ProductsStore {
         this.setValueInput(title);
       }
     } else {
-      title = this.inputClickButton;
+      if (this.inputClickButton) {
+        title = this.inputClickButton;
+      }
     }
     this.getCountProductsData(categoryIdReq, title);
     let offset;
@@ -140,6 +138,7 @@ class ProductsStore {
     } else {
       offset = this.selectedPage * this._productsOnPage;
     }
+
     await axios
       .get("https://api.escuelajs.co/api/v1/products", {
         params: {
@@ -150,15 +149,19 @@ class ProductsStore {
         },
       })
       .then((response) => {
-        this.setDataProducts(response.data);
+        this.setDataProducts(
+          response.data.map((item: ProductsApi) => normalizeProducts(item)),
+        );
+
         this._meta = Meta.success;
       })
       .catch(() => {
         this._meta = Meta.error;
+        this.setDataProducts([]);
       });
   };
 
-  setDataProducts = (productsData: Products[]) => {
+  setDataProducts = (productsData: ProductsModel[]) => {
     this.productsData = productsData;
   };
 
@@ -167,8 +170,11 @@ class ProductsStore {
     await axios
       .get("https://api.escuelajs.co/api/v1/categories")
       .then((response) => {
+        const normalizeCategoryResponse = response.data.map(
+          (item: CategoryAPI) => normalizeCategory(item),
+        );
         this.setDataCategories(
-          response.data.map(
+          normalizeCategoryResponse.map(
             (item: { id: { toString: () => number }; name: string }) => ({
               key: item.id.toString(),
               value: item.name,
@@ -178,6 +184,7 @@ class ProductsStore {
       })
       .catch(() => {
         this._meta = Meta.error;
+        this.setDataCategories([]);
       });
   };
   setDataCategories = (categories: Option[]) => {
@@ -199,6 +206,7 @@ class ProductsStore {
       })
       .catch(() => {
         this._meta = Meta.error;
+        this._setProductsCounterData(0);
       });
   };
   private _setProductsCounterData = (counterProductsData: number) => {
@@ -217,7 +225,7 @@ class ProductsStore {
     this.inputClickButton = this.inputValue;
   };
 
-  addToCart = (id: Products) => {
+  addToCart = (id: ProductsModel) => {
     alert(`Товар с id: ${id.id} добавлен в корзину`);
   };
 
@@ -226,6 +234,8 @@ class ProductsStore {
   };
   getTitle = (elements: Option[]) =>
     elements.map((el: Option) => el.value).join();
+
+  updateFilter = () => {};
 }
 
 export default new ProductsStore();

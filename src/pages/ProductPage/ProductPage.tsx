@@ -1,23 +1,46 @@
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "components/Button";
 import Card from "components/Card";
 import Text from "components/Text";
 import ArrowDownIcon from "components/icons/ArrowDownIcon";
 import ArrowLeftIcon from "components/icons/ArrowLeftIcon";
-import productStore from "store/ProductStore";
+import ProductStore from "store/ProductStore";
+import { ProductsModel } from "store/models";
+import { useLocalStore } from "utils/useLocalStore.ts";
 import styles from "./ProductPage.module.scss";
 
 const ProductPage = observer(() => {
-  const data = productStore.productData;
-  const relativeData = productStore.relativeProductsData;
+  const productStore = useLocalStore(() => ProductStore);
   const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    productStore.getProductData(id).then();
-  }, [id]);
+    productStore.getProductData(id);
+  }, [id, productStore]);
+
+  const handleNextIm = useCallback(() => {
+    productStore.nextImage();
+  }, [productStore]);
+
+  const handlePrevIm = useCallback(() => {
+    productStore.prevImage();
+  }, [productStore]);
+
+  const handleClickCart = useCallback(
+    (e: { stopPropagation: () => void }, item: ProductsModel) => {
+      e.stopPropagation();
+      productStore.addToCart(item);
+    },
+    [productStore],
+  );
+  const goToProduct = useCallback(
+    (id: number) => {
+      productStore.goToPage(() => navigate(`/${id}`));
+    },
+    [navigate, productStore],
+  );
 
   return (
     <div className={styles.container}>
@@ -32,16 +55,15 @@ const ProductPage = observer(() => {
           <div className={styles.imageScroll}>
             <div className={styles.imageViewWrapper}>
               <img
-                src={data?.images[productStore.imageCounter]}
+                src={
+                  productStore.productData?.images[productStore.imageCounter]
+                }
                 alt="image"
                 className={styles.imageScroll}
               />
             </div>
             <div className={styles.buttonsBlock}>
-              <button
-                className={styles.circle}
-                onClick={productStore.prevImage}
-              >
+              <button className={styles.circle} onClick={handlePrevIm}>
                 <ArrowDownIcon
                   color={"secondary"}
                   width={30}
@@ -49,10 +71,7 @@ const ProductPage = observer(() => {
                   className={styles.prevImage}
                 />
               </button>
-              <button
-                className={styles.circle}
-                onClick={productStore.nextImage}
-              >
+              <button className={styles.circle} onClick={handleNextIm}>
                 <ArrowDownIcon
                   color={"secondary"}
                   width={30}
@@ -69,7 +88,7 @@ const ProductPage = observer(() => {
               weight={"bold"}
               className={styles.infoContentTitle}
             >
-              {data?.title}
+              {productStore.productData?.title}
             </Text>
             <Text
               tag={"p"}
@@ -78,7 +97,7 @@ const ProductPage = observer(() => {
               view={"p-20"}
               className={styles.descriptionBlock}
             >
-              {data?.description}
+              {productStore.productData?.description}
             </Text>
             <div className={styles.priceAndButtons}>
               <Text
@@ -87,7 +106,7 @@ const ProductPage = observer(() => {
                 weight={"bold"}
                 className={styles.infoContentTitle}
               >
-                ${data?.price}
+                ${productStore.productData?.price}
               </Text>
               <div className={styles.buyButtons}>
                 <Button>Buy Now</Button>
@@ -106,7 +125,7 @@ const ProductPage = observer(() => {
             Related Items
           </Text>
           <div className={styles.products}>
-            {relativeData.map((item) => (
+            {productStore.relativeProductsData.map((item) => (
               <div key={item.id} className={styles.divCard}>
                 <Card
                   image={item.images[0]}
@@ -116,18 +135,11 @@ const ProductPage = observer(() => {
                   contentSlot={`$${item.price}`}
                   className={styles.card}
                   actionSlot={
-                    <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        productStore.addToCart(item);
-                      }}
-                    >
+                    <Button onClick={(e) => handleClickCart(e, item)}>
                       Add to Cart
                     </Button>
                   }
-                  onClick={() =>
-                    productStore.goToPage(() => navigate(`/${item.id}`))
-                  }
+                  onClick={() => goToProduct(item.id)}
                 />
               </div>
             ))}

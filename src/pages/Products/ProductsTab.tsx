@@ -1,46 +1,83 @@
 import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Button from "components/Button";
 import Card from "components/Card";
-import Filter from "components/Filter";
+import Filter, { Option } from "components/Filter";
 import Input from "components/Input";
 import Pagination from "components/Pagination";
 import Text from "components/Text";
-import productsStore, { Option } from "store/ProductsStore";
+import ProductsStore from "store/ProductsStore";
 import { useQueryParamsStoreInit } from "store/RootStore/hooks/useQueryParamsStoreInit.ts";
+import { ProductsModel } from "store/models";
+import { useLocalStore } from "utils/useLocalStore.ts";
 import styles from "./ProductsTab.module.scss";
+
 const ProductsTab = observer(() => {
   const navigate = useNavigate();
-  const store = productsStore;
+  const store = useLocalStore(() => ProductsStore);
   useQueryParamsStoreInit();
 
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
-    store.getProducts().then();
+    store.getCategories();
+  }, [store]);
+
+  useEffect(() => {
+    if (store.valueUserOptions.length > 0 && store.inputClickButton !== "") {
+      store.getProducts();
+    }
   }, [
     store.inputClickButton,
-    store.counterProductsData,
     store.valueUserOptions,
     store.selectedPage,
+    store,
   ]);
 
   useEffect(() => {
     const newParams = new URLSearchParams(searchParams);
     const { selectedPage, inputValue, valueUserOptions } = store;
     newParams.set("page", `${selectedPage}`);
-    if (inputValue !== "") {
+    if (store.inputValue !== undefined && store.inputValue.length > 0) {
       newParams.set("title", `${inputValue}`);
-    } else {
+    }
+    if (store.inputValue?.length === 0) {
       newParams.delete("title");
     }
+
     if (valueUserOptions.length > 0) {
       const categoryId = valueUserOptions[0] ? valueUserOptions[0].key : null;
       newParams.set("categoryId", `${categoryId}`);
     }
     setSearchParams(newParams);
-  }, [store.selectedPage, store.inputValue, store.valueUserOptions]);
+  }, [
+    store.selectedPage,
+    store.inputValue,
+    store.valueUserOptions,
+    searchParams,
+    store,
+    setSearchParams,
+  ]);
+
+  const handleClickCart = useCallback(
+    (e: { stopPropagation: () => void }, item: ProductsModel) => {
+      e.stopPropagation();
+      store.addToCart(item);
+    },
+    [store],
+  );
+
+  const handleClickInput = useCallback(() => {
+    store.setClickInputSearchButton();
+  }, [store]);
+
+  const goToProduct = useCallback(
+    (id: number) => {
+      store.runFunc(() => navigate(`/${id}`));
+    },
+    [navigate, store],
+  );
 
   return (
     <div className={styles.container}>
@@ -68,15 +105,12 @@ const ProductsTab = observer(() => {
       <div className={styles.filterBlock}>
         <div className={styles.findInputBlock}>
           <Input
-            value={store.inputValue}
+            value={store.inputValue ? store.inputValue : ""}
             onChange={store.setValueInput}
             placeholder={"Search product"}
             className={styles.findInput}
           />
-          <Button
-            className={styles.findButton}
-            onClick={() => store.setClickInputSearchButton()}
-          >
+          <Button className={styles.findButton} onClick={handleClickInput}>
             Find now
           </Button>
         </div>
@@ -119,16 +153,11 @@ const ProductsTab = observer(() => {
               contentSlot={`$${item.price}`}
               className={styles.card}
               actionSlot={
-                <Button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    store.addToCart(item);
-                  }}
-                >
+                <Button onClick={(e) => handleClickCart(e, item)}>
                   Add to Cart
                 </Button>
               }
-              onClick={() => store.runFunc(() => navigate(`/${item.id}`))}
+              onClick={() => goToProduct(item.id)}
             />
           </div>
         ))}

@@ -1,12 +1,12 @@
 import axios from "axios";
 import { action, computed, makeObservable, observable } from "mobx";
-import { CategoryTabInterface } from "interfaces/CategoryTab.interface.ts";
 import { Meta } from "utils/Meta.ts";
 import { log } from "utils/log.ts";
+import { CategoryAPI, CategoryModel, normalizeCategory } from "../models";
 
 type PrivateFields = "_meta";
 class CategoryStore {
-  data: CategoryTabInterface[] = [];
+  data: CategoryModel[] = [];
   private _meta: Meta = Meta.initial;
   constructor() {
     makeObservable<CategoryStore, PrivateFields>(this, {
@@ -24,14 +24,14 @@ class CategoryStore {
     axios
       .get("https://api.escuelajs.co/api/v1/categories")
       .then((response) => {
-        this.setCategoryData(response.data);
+        this.setCategoryData(
+          response.data.map((item: CategoryAPI) => normalizeCategory(item)),
+        );
       })
-      .catch((error) => {
-        log(error);
-      });
+      .catch(log);
   };
 
-  setCategoryData = (data: CategoryTabInterface[]) => {
+  setCategoryData = (data: CategoryModel[]) => {
     this.data = data;
   };
 }

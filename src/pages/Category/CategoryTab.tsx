@@ -3,14 +3,15 @@ import { useEffect } from "react";
 import Button from "components/Button";
 import Card from "components/Card";
 import Text from "components/Text";
-import categoryStore from "store/CategoryStore";
+import CategoryStore from "store/CategoryStore/CategoryStore.ts";
+import { useLocalStore } from "utils/useLocalStore.ts";
 import styles from "./CategoryTab.module.scss";
 
 const CategoryTab = observer(() => {
-  const data = categoryStore.data;
+  const categoryStore = useLocalStore(() => CategoryStore);
   useEffect(() => {
-    categoryStore.getCategoryData().catch();
-  }, []);
+    categoryStore.getCategoryData();
+  }, [categoryStore]);
 
   return (
     <div className={styles.container}>
@@ -44,12 +45,12 @@ const CategoryTab = observer(() => {
       >
         Total Category
         <Text view={"p-20"} tag={"span"} color={"accent"} weight={"bold"}>
-          {data.length}
+          {categoryStore.data.length}
         </Text>
       </Text>
 
       <div className={styles.products}>
-        {data.map((item) => (
+        {categoryStore.data.map((item) => (
           <div key={item.id} className={styles.divCard}>
             <Card
               image={item.image}
