@@ -152,7 +152,7 @@ const ProductsTab = observer(() => {
                   Add to Cart
                 </Button>
               }
-              onClick={() => store.runFunc(() => navigate(`/${item.id}`))}
+              onClick={()  => navigate(`/${item.id}`)}
             />
           </div>
         ))}

@@ -21,7 +21,6 @@ class ProductStore {
       setRelativeProductsData: action,
       getProductData: action,
       getRelativeProductsData: action,
-      goToPage: action,
       addToCart: action,
       nextImage: action,
       prevImage: action,
@@ -82,9 +81,7 @@ class ProductStore {
     }
     return randomItems;
   };
-  goToPage = (func: () => void) => {
-    func();
-  };
+
   addToCart = (id: ProductsModel) => {
     alert(`Товар с id: ${id.id} добавлен в корзину`);
   };

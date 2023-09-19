@@ -133,7 +133,7 @@ const ProductPage = observer(() => {
                       Add to Cart
                     </Button>
                   }
-                  onClick={() => productStore.goToPage(() => navigate(`/${id}`))}
+                  onClick={()  => navigate(`/${id}`)}
                 />
               </div>
             ))}

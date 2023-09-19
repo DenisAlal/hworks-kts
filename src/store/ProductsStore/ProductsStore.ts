@@ -47,7 +47,6 @@ class ProductsStore {
       setClickInputSearchButton: action,
       setSelectedPage: action,
       addToCart: action,
-      runFunc: action,
       pageCounter: action,
       updateFilter: action,
     });
@@ -229,9 +228,6 @@ class ProductsStore {
     alert(`Товар с id: ${id.id} добавлен в корзину`);
   };
 
-  runFunc = (func: () => void) => {
-    func();
-  };
   getTitle = (elements: Option[]) =>
     elements.map((el: Option) => el.value).join();
 
