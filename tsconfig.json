@@ -24,7 +24,9 @@
       "utils": ["utils/*"],
       "pages": ["pages/*"],
       "lib": ["lib/*"],
-      "context": ["context/*"]
+      "context": ["context/*"],
+      "interfaces": ["interfaces/*"],
+      "store": ["store/*"]
     }
   },
   "include": ["src"],

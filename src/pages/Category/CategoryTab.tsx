@@ -1,24 +1,17 @@
-import axios from "axios";
-import * as React from "react";
-import { useEffect, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
 import Button from "components/Button";
 import Card from "components/Card";
 import Text from "components/Text";
-import { CategoryTabInterface } from "./CategoryTab.interface.ts";
+import CategoryStore from "store/CategoryStore/CategoryStore.ts";
+import { useLocalStore } from "utils/useLocalStore.ts";
 import styles from "./CategoryTab.module.scss";
 
-const CategoryTab: React.FC = () => {
-  const [data, setData] = useState<CategoryTabInterface[]>();
+const CategoryTab = observer(() => {
+    const categoryStore = useLocalStore(() => new CategoryStore());
   useEffect(() => {
-    const fetch = async () => {
-      const result = await axios({
-        method: "get",
-        url: "https://api.escuelajs.co/api/v1/categories",
-      });
-      setData(result.data);
-    };
-    fetch();
-  }, []);
+    categoryStore.getCategoryData();
+  }, [categoryStore]);
 
   return (
     <div className={styles.container}>
@@ -52,12 +45,12 @@ const CategoryTab: React.FC = () => {
       >
         Total Category
         <Text view={"p-20"} tag={"span"} color={"accent"} weight={"bold"}>
-          {data?.length}
+          {categoryStore.data.length}
         </Text>
       </Text>
 
       <div className={styles.products}>
-        {data?.map((item) => (
+        {categoryStore.data.map((item) => (
           <div key={item.id} className={styles.divCard}>
             <Card
               image={item.image}
@@ -73,5 +66,6 @@ const CategoryTab: React.FC = () => {
       </div>
     </div>
   );
-};
+});
+
 export default CategoryTab;
