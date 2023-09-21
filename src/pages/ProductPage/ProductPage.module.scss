@@ -1,0 +1,193 @@
+.container {
+  margin: 0 40px 0 100px;
+
+  .backBlock {
+    height: 48px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--spase-xs);
+    margin-top: 60px;
+  }
+
+  .mainBlock {
+    margin-top: 32px;
+    .mainContent {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+
+      .imageScroll {
+        position: relative;
+        width: 600px;
+        height: 600px;
+        object-fit: cover;
+        overflow: hidden;
+
+        .imageViewWrapper {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+        }
+
+        .buttonsBlock {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          align-content: center;
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 1;
+
+          .circle {
+            width: 64px;
+            height: 64px;
+            background: rgba(0, 0, 0, 0.62);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 var(--spase-xl);
+            border: none;
+
+            .prevImage {
+              -webkit-transform: rotate(90deg);
+              -moz-transform: rotate(90deg);
+              -ms-transform: rotate(90deg);
+              -o-transform: rotate(90deg);
+              transform: rotate(90deg);
+            }
+
+            .nextImage {
+              -webkit-transform: rotate(-90deg);
+              -moz-transform: rotate(-90deg);
+              -ms-transform: rotate(-90deg);
+              -o-transform: rotate(-90deg);
+              transform: rotate(-90deg);
+            }
+          }
+          .circle:hover {
+            transition: 0.3s;
+            background: rgb(0, 0, 0);
+          }
+        }
+      }
+
+      .productContent {
+        display: flex;
+        flex-direction: column;
+        margin-left: var(--spase-xxxl);
+
+        .infoContentTitle {
+          font-size: 44px;
+          margin: 0;
+          line-height: 48px;
+        }
+
+        .descriptionBlock {
+          margin-top: var(--spase-m);
+        }
+        .priceAndButtons {
+          margin-top: var(--spase-xxxl);
+          display: flex;
+          flex-direction: column;
+          .infoContentTitle {
+            margin-top: var(--spase-l);
+          }
+          .buyButtons {
+            margin-top: var(--spase-xl);
+            .buttonCart {
+              margin-left: var(--spase-xl);
+              border: solid 1px #afadb5;
+              background: white;
+              color: black;
+            }
+            .buttonCart:hover {
+              background: rgba(134, 170, 167, 0.34);
+            }
+          }
+        }
+      }
+    }
+    @media (max-width: 970px) {
+      .mainContent {
+        flex-direction: column;
+        .imageScroll {
+          width: 100%;
+        }
+        .productContent {
+          flex-direction: column;
+          margin: 0;
+          .infoContentTitle {
+            margin-top: var(--spase-xxxl);
+          }
+        }
+      }
+    }
+    .relatedItemsBlock {
+      font-size: 32px;
+      line-height: 48px;
+      margin-top: var(--spase-xl);
+      .relatedContentTitle {
+        font-size: 32px;
+        margin: 0;
+        line-height: 48px;
+      }
+      .products {
+        margin-top: var(--spase-l);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        align-items: flex-start;
+        gap: (var(--spase-xxl));
+      }
+
+      .divCard {
+        flex-basis: 360px;
+      }
+
+      .card {
+        min-width: 360px;
+        height: 620px;
+
+        img {
+          height: 360px;
+          width: 360px;
+        }
+      }
+    }
+    @media (max-width: 970px) {
+      .relatedItemsBlock {
+        display: flex;
+        flex-direction: column;
+        margin-top: var(--spase-xxxl);
+        .relatedContentTitle {
+          display: flex;
+          justify-content: center;
+        }
+        .products {
+          justify-content: center;
+        }
+        .divCard {
+          flex-basis: 100%;
+        }
+        .card {
+          width: 100%;
+          height: 620px;
+
+          img {
+            height: 360px;
+            width: 100%;
+            object-fit: cover;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,34 @@
+
+
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "components": ["components/*"],
+      "config": ["config/*"],
+      "styles": ["styles/*"],
+      "assets": ["assets/*"],
+      "utils": ["utils/*"],
+      "pages": ["pages/*"],
+      "lib": ["lib/*"],
+      "context": ["context/*"],
+      "interfaces": ["interfaces/*"],
+      "store": ["store/*"]
+    },
+    "noEmit": true,
+    "allowJs": true,
+    "sourceMap": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "skipLibCheck": true,
+    "module": "ES6",
+    "target": "ES6",
+    "moduleResolution": "node",
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "allowImportingTsExtensions": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}

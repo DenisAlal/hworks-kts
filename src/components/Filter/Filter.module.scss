@@ -1,0 +1,34 @@
+.dropdown {
+  height: 52px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spase-xxs);
+}
+
+.optionsBlock {
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
+  z-index: 10;
+}
+
+.option {
+  display: flex;
+  padding: var(--spase-s) var(--spase-xs);
+  align-items: center;
+  align-self: stretch;
+  height: 24px;
+  background: white;
+}
+
+.itemOption {
+  line-height: 20px;
+  color: var(--primaryColor);
+}
+
+.itemOption:hover {
+  color: var(--secondaryColor);
+  cursor: pointer;
+}
+
+.checkedOption {
+  color: var(--accentColor);
+}
