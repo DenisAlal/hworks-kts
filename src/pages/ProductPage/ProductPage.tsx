@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useCallback, useEffect } from "react";
+import * as React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "components/Button";
 import Card from "components/Card";
@@ -133,7 +134,7 @@ const ProductPage = observer(() => {
                       Add to Cart
                     </Button>
                   }
-                  onClick={()  => navigate(`/${id}`)}
+                  onClick={() => navigate(`/${id}`)}
                 />
               </div>
             ))}

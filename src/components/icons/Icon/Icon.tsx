@@ -1,11 +1,12 @@
 import * as React from "react";
 export type IconProps = React.SVGAttributes<SVGElement> & {
   className?: string;
-  color?: "primary" | "secondary" | "accent";
+  color?: "primary" | "secondary" | "accent" | "white";
 };
 const primaryColor = "#000000";
 const secondaryColor = "#AFADB5";
 const accentColor = "#518581";
+const whiteColor = "#ffffff";
 const Icon: React.FC<React.PropsWithChildren<IconProps>> = (props) => {
   const { color, width = "24", height = "24", children, ...restProps } = props;
 
@@ -16,6 +17,9 @@ const Icon: React.FC<React.PropsWithChildren<IconProps>> = (props) => {
       break;
     case "secondary":
       SVGColor = secondaryColor;
+      break;
+    case "white":
+      SVGColor = whiteColor;
       break;
   }
   return (

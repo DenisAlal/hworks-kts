@@ -1,9 +1,7 @@
 import * as React from "react";
-// import github from "assets/github.jpg";
+import { Link } from "react-router-dom";
 import Text from "components/Text";
 import styles from "./AboutTab.module.scss";
-import {Link} from "react-router-dom";
-
 
 const AboutTab: React.FC = () => {
   return (
@@ -28,8 +26,9 @@ const AboutTab: React.FC = () => {
           On this page you can see what a good fellow wrote this site by
           clicking on the link in GitHub located below.
         </Text>
+
         <a href={"https://github.com/DenisAlal"} className={styles.githubLink}>
-          {/*<img src={github} alt={"github"} />*/}
+          GitHub
         </a>
       </div>
       <Link to={"/"}></Link>

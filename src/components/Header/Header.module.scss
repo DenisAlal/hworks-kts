@@ -42,6 +42,16 @@ $accentColor: #518581;
   flex-direction: row;
   gap: var(--spase-xl);
 }
+.modalCart {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: #ffffff;
+  width: 500px;
+  margin-top: 80px;
+  margin-right: 50px;
+  box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.25);
+}
 
 @media (max-width: 970px) {
   .buttons {
@@ -49,6 +59,9 @@ $accentColor: #518581;
   }
   .logo {
     padding-left: 10px;
+  }
+  .modalCart {
+    width: 300px;
   }
 }
 .buttons div {

@@ -1,5 +1,11 @@
 import axios from "axios";
-import { action, computed, makeObservable, observable, reaction } from "mobx";
+import {
+  action,
+  computed,
+  makeObservable,
+  observable,
+  reaction,
+} from "mobx";
 import { Option } from "components/Filter";
 import { Meta } from "utils/Meta.ts";
 import rootStore from "../RootStore";
@@ -22,9 +28,11 @@ class ProductsStore {
   valueOptions: Option[] = [];
   inputValue: string | undefined;
   valueUserOptions: Option[] = [];
-  inputClickButton: string | undefined = "";
+  inputClickButton: string | undefined;
   pagesCountValue = 0;
   selectedPage: number = 1;
+  firstLoad = true;
+  itemsArrayList: number[] = [];
   constructor() {
     makeObservable<ProductsStore, PrivateFields>(this, {
       _meta: observable,
@@ -36,6 +44,7 @@ class ProductsStore {
       counterProductsData: observable,
       selectedPage: observable,
       valueUserOptions: observable,
+      itemsArrayList: observable,
       meta: computed,
       getCategories: action,
       getProducts: action,
@@ -79,7 +88,12 @@ class ProductsStore {
       ) {
         this.pagesCountValue = 2;
       } else {
-        this.pagesCountValue = Math.floor(pageCount / this._productsOnPage);
+        const pageCountNew = Math.floor(pageCount / this._productsOnPage);
+        if (pageCountNew * 9 < pageCount) {
+          this.pagesCountValue = pageCountNew + 1;
+        } else {
+          this.pagesCountValue = pageCountNew;
+        }
       }
     } else {
       this.pagesCountValue = 0;
@@ -110,8 +124,8 @@ class ProductsStore {
         ? this.valueUserOptions[0].key
         : null;
     }
-    let title = "";
 
+    let title = "";
     if (rootStore.query.getParam("title")) {
       const newTitle = rootStore.query.getParam("title");
       if (newTitle !== undefined) {
@@ -123,7 +137,14 @@ class ProductsStore {
         title = this.inputClickButton;
       }
     }
-    this.getCountProductsData(categoryIdReq, title);
+    await this.getCountProductsData(categoryIdReq, title);
+    if (rootStore.query.getParam("page") && this.firstLoad) {
+      const page = Number(rootStore.query.getParam("page"));
+      const checkProducts = this.counterProductsData / page;
+      if (checkProducts >= 9) {
+        this.setSelectedPage(page);
+      }
+    }
     let offset;
     if (this.selectedPage === 1) {
       offset = 0;
@@ -135,9 +156,8 @@ class ProductsStore {
     ) {
       offset = this._productsOnPage;
     } else {
-      offset = this.selectedPage * this._productsOnPage;
+      offset = this.selectedPage * this._productsOnPage - this._productsOnPage;
     }
-
     await axios
       .get("https://api.escuelajs.co/api/v1/products", {
         params: {
@@ -151,7 +171,7 @@ class ProductsStore {
         this.setDataProducts(
           response.data.map((item: ProductsApi) => normalizeProducts(item)),
         );
-
+        this.firstLoad = false;
         this._meta = Meta.success;
       })
       .catch(() => {
@@ -162,6 +182,7 @@ class ProductsStore {
 
   setDataProducts = (productsData: ProductsModel[]) => {
     this.productsData = productsData;
+    this.addToCart();
   };
 
   getCategories = async () => {
@@ -213,19 +234,51 @@ class ProductsStore {
   };
   setValueOptions = (value: Option[]) => {
     this.valueUserOptions = value;
+    if (!this.firstLoad) {
+      this.getProducts();
+    }
   };
+
   setValueInput = (value: string): string => {
     return (this.inputValue = value);
   };
   setSelectedPage = (selectedPage: number) => {
     this.selectedPage = selectedPage;
+    if (!this.firstLoad) {
+      this.getProducts();
+    }
   };
   setClickInputSearchButton = () => {
     this.inputClickButton = this.inputValue;
+    if (!this.firstLoad) {
+      this.getProducts();
+    }
   };
 
-  addToCart = (id: ProductsModel) => {
-    alert(`Товар с id: ${id.id} добавлен в корзину`);
+  addToCart = (product?: ProductsModel) => {
+    if (product) {
+      const cartItems = localStorage.getItem("cartItems");
+      let itemsArray;
+      if (cartItems) {
+        itemsArray = JSON.parse(cartItems);
+        if (itemsArray.indexOf(product.id) === -1) {
+          itemsArray.push(product.id);
+        } else {
+          itemsArray.splice(itemsArray.indexOf(product.id), 1);
+        }
+      } else {
+        itemsArray = [product.id];
+      }
+      this.itemsArrayList = itemsArray;
+      localStorage.setItem("cartItems", JSON.stringify(itemsArray));
+    } else {
+      const cartItems = localStorage.getItem("cartItems");
+      let itemsArray = [];
+      if (cartItems) {
+        itemsArray = JSON.parse(cartItems);
+        this.itemsArrayList = itemsArray;
+      }
+    }
   };
 
   getTitle = (elements: Option[]) =>

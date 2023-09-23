@@ -1,6 +1,7 @@
 $accentColorOpacity: rgba(81, 133, 129, 0.6);
 .container {
   margin: 0 100px;
+
   .infoContent {
     display: flex;
     flex-direction: column;
@@ -17,12 +18,20 @@ $accentColorOpacity: rgba(81, 133, 129, 0.6);
       max-width: 670px;
     }
 
-    .githubLink > img {
+    .githubLink {
+      display: flex;
       height: 40px;
+      width: 100px;
       border-radius: 30px;
+      background: black;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
     }
 
-    .githubLink:hover > img {
+    .githubLink:hover {
       transition: 0.2s;
       box-shadow: 0 2px 20px 2px $accentColorOpacity;
     }

@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
+import * as React from "react";
 import Button from "components/Button";
 import Card from "components/Card";
 import Text from "components/Text";
@@ -8,7 +9,7 @@ import { useLocalStore } from "utils/useLocalStore.ts";
 import styles from "./CategoryTab.module.scss";
 
 const CategoryTab = observer(() => {
-    const categoryStore = useLocalStore(() => new CategoryStore());
+  const categoryStore = useLocalStore(() => new CategoryStore());
   useEffect(() => {
     categoryStore.getCategoryData();
   }, [categoryStore]);

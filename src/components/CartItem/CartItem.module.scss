@@ -1,0 +1,28 @@
+.main {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+
+  .image {
+    height: 100px;
+    width: 100px;
+  }
+  .contentBlock {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .footer {
+    margin-left: auto;
+    .actionSlot {
+      min-width: 100px;
+    }
+
+    .contentSlot {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+  }
+}

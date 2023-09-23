@@ -1,5 +1,5 @@
-import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
+import * as React from "react";
 import { useCallback, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Button from "components/Button";
@@ -25,20 +25,12 @@ const ProductsTab = observer(() => {
   }, [store]);
 
   useEffect(() => {
-    if (store.valueUserOptions.length > 0 && store.inputClickButton !== "") {
-      store.getProducts();
-    }
-  }, [
-    store.inputClickButton,
-    store.valueUserOptions,
-    store.selectedPage,
-    store,
-  ]);
-
-  useEffect(() => {
     const newParams = new URLSearchParams(searchParams);
-    const { selectedPage, inputValue, valueUserOptions } = store;
-    newParams.set("page", `${selectedPage}`);
+    const { selectedPage, inputValue, valueUserOptions, firstLoad } = store;
+    if (!firstLoad) {
+      newParams.set("page", `${selectedPage}`);
+    }
+
     if (store.inputValue !== undefined && store.inputValue.length > 0) {
       newParams.set("title", `${inputValue}`);
     }
@@ -71,8 +63,6 @@ const ProductsTab = observer(() => {
   const handleClickInput = useCallback(() => {
     store.setClickInputSearchButton();
   }, [store]);
-
-
 
   return (
     <div className={styles.container}>
@@ -112,7 +102,7 @@ const ProductsTab = observer(() => {
         <div>
           {store.categories && (
             <Filter
-              options={toJS(store.categories)}
+              options={store.categories}
               value={store.valueUserOptions}
               onChange={(newValue: Option[]) => {
                 store.setValueOptions(newValue);
@@ -148,11 +138,20 @@ const ProductsTab = observer(() => {
               contentSlot={`$${item.price}`}
               className={styles.card}
               actionSlot={
-                <Button onClick={(e) => handleClickCart(e, item)}>
-                  Add to Cart
-                </Button>
+                store.itemsArrayList.indexOf(Number(item.id)) === -1 ? (
+                  <Button onClick={(e) => handleClickCart(e, item)}>
+                    Add to Cart
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={(e) => handleClickCart(e, item)}
+                    className={styles.removeFromCart}
+                  >
+                    Remove from Cart
+                  </Button>
+                )
               }
-              onClick={()  => navigate(`/${item.id}`)}
+              onClick={() => navigate(`/${item.id}`)}
             />
           </div>
         ))}

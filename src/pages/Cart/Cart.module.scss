@@ -1,0 +1,73 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  margin: 0 100px;
+  justify-content: left;
+  .infoContent {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spase-m);
+    text-align: center;
+    align-items: center;
+    margin-top: 100px;
+    margin-bottom: 48px;
+    .infoContentTitle {
+      font-size: 44px;
+    }
+  }
+  .CardItem {
+    justify-content: normal;
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+    .buttons {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      .viewProduct {
+        background: var(--accentColor);
+      }
+      .viewProduct:hover {
+        background: rgba(81, 133, 129, 0.68);
+      }
+      .removeFromCart {
+        background: rgba(255, 0, 0, 0.74);
+      }
+      .removeFromCart:hover {
+        transition: 0.3s;
+        background: rgba(255, 0, 0, 0.53);
+      }
+    }
+  }
+  .loader {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 20px 0;
+  }
+
+  .loading {
+    animation: example 1s infinite;
+    height: 60px;
+    width: 60px;
+  }
+  @keyframes example {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  .buyRow {
+    margin: var(--spase-xl) 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+    gap: 20px;
+    align-items: center;
+  }
+  .emptyCart {
+    text-align: center;
+  }
+}
