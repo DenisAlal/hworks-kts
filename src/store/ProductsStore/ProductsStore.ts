@@ -1,11 +1,5 @@
 import axios from "axios";
-import {
-  action,
-  computed,
-  makeObservable,
-  observable,
-  reaction,
-} from "mobx";
+import { action, computed, makeObservable, observable, reaction } from "mobx";
 import { Option } from "components/Filter";
 import { Meta } from "utils/Meta.ts";
 import rootStore from "../RootStore";
@@ -101,6 +95,11 @@ class ProductsStore {
   }
 
   getProducts = async () => {
+    const cartItems = localStorage.getItem("cartItems");
+    let onCartId: number[];
+    if (cartItems) {
+      onCartId = JSON.parse(cartItems);
+    }
     this._meta = Meta.loading;
     let categoryIdReq;
     if (
@@ -124,7 +123,6 @@ class ProductsStore {
         ? this.valueUserOptions[0].key
         : null;
     }
-
     let title = "";
     if (rootStore.query.getParam("title")) {
       const newTitle = rootStore.query.getParam("title");
@@ -169,7 +167,9 @@ class ProductsStore {
       })
       .then((response) => {
         this.setDataProducts(
-          response.data.map((item: ProductsApi) => normalizeProducts(item)),
+          response.data.map((item: ProductsApi) =>
+            normalizeProducts(item, onCartId),
+          ),
         );
         this.firstLoad = false;
         this._meta = Meta.success;
@@ -258,7 +258,7 @@ class ProductsStore {
   addToCart = (product?: ProductsModel) => {
     if (product) {
       const cartItems = localStorage.getItem("cartItems");
-      let itemsArray;
+      let itemsArray: number[];
       if (cartItems) {
         itemsArray = JSON.parse(cartItems);
         if (itemsArray.indexOf(product.id) === -1) {
@@ -269,15 +269,15 @@ class ProductsStore {
       } else {
         itemsArray = [product.id];
       }
-      this.itemsArrayList = itemsArray;
-      localStorage.setItem("cartItems", JSON.stringify(itemsArray));
-    } else {
-      const cartItems = localStorage.getItem("cartItems");
-      let itemsArray = [];
-      if (cartItems) {
-        itemsArray = JSON.parse(cartItems);
-        this.itemsArrayList = itemsArray;
+      if (itemsArray) {
+        this.setDataProducts(
+          this.productsData.map((item: ProductsApi) =>
+            normalizeProducts(item, itemsArray),
+          ),
+        );
       }
+
+      localStorage.setItem("cartItems", JSON.stringify(itemsArray));
     }
   };
 

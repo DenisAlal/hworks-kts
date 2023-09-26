@@ -36,7 +36,12 @@ const ProductPage = observer(() => {
     },
     [productStore],
   );
-
+  const handleClickNavigate = useCallback(
+    (navigateTo: number) => {
+      navigate(`/${navigateTo}`);
+    },
+    [navigate],
+  );
   return (
     <div className={styles.container}>
       <div className={styles.backBlock} onClick={() => navigate(-1)}>
@@ -134,7 +139,7 @@ const ProductPage = observer(() => {
                       Add to Cart
                     </Button>
                   }
-                  onClick={() => navigate(`/${id}`)}
+                  onClick={() => handleClickNavigate(item.id)}
                 />
               </div>
             ))}

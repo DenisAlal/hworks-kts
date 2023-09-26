@@ -64,6 +64,12 @@ const ProductsTab = observer(() => {
     store.setClickInputSearchButton();
   }, [store]);
 
+  const handleClickNavigate = useCallback(
+    (navigateTo: number) => {
+      navigate(`/${navigateTo}`);
+    },
+    [navigate],
+  );
   return (
     <div className={styles.container}>
       <div className={styles.infoContent}>
@@ -138,7 +144,7 @@ const ProductsTab = observer(() => {
               contentSlot={`$${item.price}`}
               className={styles.card}
               actionSlot={
-                store.itemsArrayList.indexOf(Number(item.id)) === -1 ? (
+                !item.onCart ? (
                   <Button onClick={(e) => handleClickCart(e, item)}>
                     Add to Cart
                   </Button>
@@ -151,7 +157,7 @@ const ProductsTab = observer(() => {
                   </Button>
                 )
               }
-              onClick={() => navigate(`/${item.id}`)}
+              onClick={() => handleClickNavigate(item.id)}
             />
           </div>
         ))}

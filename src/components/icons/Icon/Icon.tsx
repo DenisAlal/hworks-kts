@@ -10,16 +10,16 @@ const whiteColor = "#ffffff";
 const Icon: React.FC<React.PropsWithChildren<IconProps>> = (props) => {
   const { color, width = "24", height = "24", children, ...restProps } = props;
 
-  let SVGColor = primaryColor;
+  let svgColor = primaryColor;
   switch (color) {
     case "accent":
-      SVGColor = accentColor;
+      svgColor = accentColor;
       break;
     case "secondary":
-      SVGColor = secondaryColor;
+      svgColor = secondaryColor;
       break;
     case "white":
-      SVGColor = whiteColor;
+      svgColor = whiteColor;
       break;
   }
   return (
@@ -28,9 +28,9 @@ const Icon: React.FC<React.PropsWithChildren<IconProps>> = (props) => {
       xmlns="http://www.w3.org/2000/svg"
       width={width}
       height={height}
-      fill={SVGColor}
+      fill={svgColor}
       strokeWidth={0}
-      stroke={SVGColor}
+      stroke={svgColor}
       {...restProps}
     >
       {children}

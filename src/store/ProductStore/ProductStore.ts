@@ -34,7 +34,7 @@ class ProductStore {
     await axios
       .get(`https://api.escuelajs.co/api/v1/products/${id}`)
       .then((response) => {
-        this.setProductData(normalizeProducts(response.data));
+        this.setProductData(normalizeProducts(response.data, []));
       })
       .catch(log);
   };
@@ -51,7 +51,7 @@ class ProductStore {
       })
       .then((response) => {
         const normalizedResponse = response.data.map((item: ProductsApi) =>
-          normalizeProducts(item),
+          normalizeProducts(item, []),
         );
         if (id) {
           const updatedData = normalizedResponse.filter(

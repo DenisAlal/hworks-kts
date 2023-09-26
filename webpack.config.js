@@ -56,7 +56,6 @@ module.exports = {
   ].filter(Boolean),
   module: {
     rules: [
-
       {
         test: /\.module\.s?css$/,
         use: getSettingsForStyles(true),

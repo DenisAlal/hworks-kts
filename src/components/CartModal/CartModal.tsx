@@ -1,8 +1,9 @@
 import cn from "classnames";
 import { observer } from "mobx-react-lite";
 import * as React from "react";
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { cartPath } from "config/pathLinks.ts";
 import CartModalStore from "store/CartModalStore";
 import { Meta } from "utils/Meta.ts";
 import { useLocalStore } from "utils/useLocalStore.ts";
@@ -20,13 +21,44 @@ export type ModalProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const CartModal: React.FC<ModalProps> = observer(
   ({ className, setIsOpen, isOpen }) => {
+    const modalRef = useRef<HTMLDivElement>(null);
+    const [firstLoad, setFirstLoad] = useState(true);
+    useEffect(() => {
+      if (!firstLoad) {
+        const handleClickOutside = (event: MouseEvent) => {
+          if (
+            modalRef.current &&
+            !modalRef.current.contains(event.target as Node)
+          ) {
+            setIsOpen(!isOpen);
+          }
+        };
+
+        if (modalRef.current) {
+          document.addEventListener("click", handleClickOutside);
+        }
+
+        return () => {
+          document.removeEventListener("click", handleClickOutside);
+        };
+      } else {
+        setFirstLoad(false);
+      }
+    }, [setIsOpen, modalRef, firstLoad, isOpen]);
+
     const store = useLocalStore(() => new CartModalStore());
     useEffect(() => {
-      store.getCartData();
+      store.getModalCartData();
     }, [store]);
     const navigate = useNavigate();
+
+    const handleCartClick = useCallback(() => {
+      navigate(cartPath);
+      setIsOpen(!isOpen);
+    }, [isOpen, navigate, setIsOpen]);
+
     return (
-      <div className={cn(className, styles.CartModal)}>
+      <div ref={modalRef} className={cn(className, styles.CartModal)}>
         <div className={styles.titleBlock}>
           <Text
             tag={"div"}
@@ -70,14 +102,7 @@ const CartModal: React.FC<ModalProps> = observer(
                     </div>
                   ))}
                 <div className={styles.footer}>
-                  <Button
-                    onClick={() => {
-                      navigate("/cart");
-                      setIsOpen(!isOpen);
-                    }}
-                  >
-                    Go to Cart
-                  </Button>
+                  <Button onClick={handleCartClick}>Go to Cart</Button>
                 </div>
               </div>
             )}
@@ -87,4 +112,5 @@ const CartModal: React.FC<ModalProps> = observer(
     );
   },
 );
+
 export default CartModal;

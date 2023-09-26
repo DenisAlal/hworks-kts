@@ -2,25 +2,25 @@ import { observer } from "mobx-react-lite";
 import * as React from "react";
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Button from "components/Button";
+import CartItem from "components/CartItem";
+import Loader from "components/Loader";
+import Text from "components/Text";
+import TrashIcon from "components/icons/TrashIcon";
+import ViewItemIcon from "components/icons/ViewItemIcon";
+import CartStore from "store/CartStore";
+import { ProductsModel } from "store/models";
 import { Meta } from "utils/Meta.ts";
 import { useLocalStore } from "utils/useLocalStore.ts";
-import Button from "../../components/Button";
-import CartItem from "../../components/CartItem";
-import Loader from "../../components/Loader";
-import Text from "../../components/Text";
-import TrashIcon from "../../components/icons/TrashIcon";
-import ViewItemIcon from "../../components/icons/ViewItemIcon";
-import CartModalStore from "../../store/CartModalStore";
-import { ProductsModel } from "../../store/models";
 import styles from "./Cart.module.scss";
 
 const Cart: React.FC = observer(() => {
-  const store = useLocalStore(() => new CartModalStore());
+  const store = useLocalStore(() => new CartStore());
   const navigate = useNavigate();
 
   useEffect(() => {
     store.getCartData();
-  }, [store]);
+  }, []);
   const handleClickCart = useCallback(
     (e: { stopPropagation: () => void }, item: ProductsModel) => {
       e.stopPropagation();
@@ -64,7 +64,7 @@ const Cart: React.FC = observer(() => {
         </div>
       ) : (
         <div>
-          {store.emptyCart ? (
+          {store.data.length === 0 ? (
             <Text
               className={styles.emptyCart}
               weight={"bold"}
