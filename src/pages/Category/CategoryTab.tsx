@@ -1,6 +1,7 @@
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "components/Button";
 import Card from "components/Card";
 import Text from "components/Text";
@@ -10,10 +11,13 @@ import styles from "./CategoryTab.module.scss";
 
 const CategoryTab = observer(() => {
   const categoryStore = useLocalStore(() => new CategoryStore());
+  const navigate = useNavigate();
   useEffect(() => {
     categoryStore.getCategoryData();
   }, [categoryStore]);
-
+  const handleClickCategory = useCallback((item: number) => {
+    navigate(`/?page=1&categoryId=${item}`);
+  }, []);
   return (
     <div className={styles.container}>
       <div className={styles.infoContent}>
@@ -58,9 +62,7 @@ const CategoryTab = observer(() => {
               title={item.name}
               className={styles.card}
               actionSlot={<Button>View category</Button>}
-              onClick={() => {
-                alert("В разработке");
-              }}
+              onClick={() => handleClickCategory(item.id)}
             />
           </div>
         ))}

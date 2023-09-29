@@ -21,6 +21,7 @@ export type ModalProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const CartModal: React.FC<ModalProps> = observer(
   ({ className, setIsOpen, isOpen }) => {
+    const store = useLocalStore(() => new CartModalStore());
     const modalRef = useRef<HTMLDivElement>(null);
     const [firstLoad, setFirstLoad] = useState(true);
     useEffect(() => {
@@ -46,7 +47,6 @@ const CartModal: React.FC<ModalProps> = observer(
       }
     }, [setIsOpen, modalRef, firstLoad, isOpen]);
 
-    const store = useLocalStore(() => new CartModalStore());
     useEffect(() => {
       store.getModalCartData();
     }, [store]);

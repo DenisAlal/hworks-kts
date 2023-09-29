@@ -9,7 +9,6 @@ import Input from "components/Input";
 import Pagination from "components/Pagination";
 import Text from "components/Text";
 import ProductsStore from "store/ProductsStore";
-import { useQueryParamsStoreInit } from "store/RootStore/hooks/useQueryParamsStoreInit.ts";
 import { ProductsModel } from "store/models";
 import { useLocalStore } from "utils/useLocalStore.ts";
 import styles from "./ProductsTab.module.scss";
@@ -17,8 +16,6 @@ import styles from "./ProductsTab.module.scss";
 const ProductsTab = observer(() => {
   const navigate = useNavigate();
   const store = useLocalStore(() => new ProductsStore());
-  useQueryParamsStoreInit();
-
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
     store.getCategories();

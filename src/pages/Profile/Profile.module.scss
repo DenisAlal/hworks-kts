@@ -1,0 +1,54 @@
+@import "styles/mixins";
+
+.container {
+  margin: 0 100px;
+
+  .infoContent {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spase-m);
+    text-align: center;
+    align-items: center;
+    margin-top: 100px;
+    margin-bottom: 48px;
+
+    .infoContentTitle {
+      font-size: 44px;
+    }
+  }
+
+  .userContent {
+    .userInfoBlock {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 50px;
+    }
+
+    .image {
+      @include boxSize(105px);
+      border-radius: 10px;
+    }
+    .inputContainer {
+      border: solid 1px var(--secondaryColor);
+      padding: 0 10px;
+      margin: 10px 0;
+      .inputs {
+        margin: 10px 0;
+        border: solid 1px var(--secondaryColor);
+      }
+      .newImage {
+        border-radius: 10px;
+        margin-top: 10px;
+        @include boxSize(105px);
+      }
+      .selectedImageText {
+        width: 370px;
+        margin: 0;
+      }
+      .inputImage {
+        margin: 10px 0;
+      }
+    }
+  }
+}

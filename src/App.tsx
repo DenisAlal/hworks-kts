@@ -6,6 +6,7 @@ import {
   cartPath,
   categoriesPath,
   productsPath,
+  profile,
 } from "config/pathLinks.ts";
 import { AppContextProvider } from "context/App.context.tsx";
 import AboutTab from "./pages/About/AboutTab.tsx";
@@ -13,6 +14,7 @@ import Cart from "./pages/Cart/Cart.tsx";
 import CategoryTab from "./pages/Category/CategoryTab.tsx";
 import ProductPage from "./pages/ProductPage/ProductPage.tsx";
 import ProductsTab from "./pages/Products/ProductsTab.tsx";
+import Profile from "./pages/Profile/Profile.tsx";
 
 const App: React.FC = () => {
   return (
@@ -22,6 +24,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path={productsPath} element={<ProductsTab />} />
           <Route path={cartPath} element={<Cart />} />
+          <Route path={profile} element={<Profile />} />
           <Route path={productsPath + ":id"} element={<ProductPage />} />
           <Route path={categoriesPath} element={<CategoryTab />} />
           <Route path={aboutPath} element={<AboutTab />} />
