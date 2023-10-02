@@ -1,5 +1,6 @@
 import cn from "classnames";
 import * as React from "react";
+import { memo } from "react";
 import styles from "./InputProps.module.scss";
 
 export type InputProps = Omit<
@@ -10,8 +11,8 @@ export type InputProps = Omit<
   afterSlot?: React.ReactNode;
 };
 
-const InputFile = React.forwardRef<HTMLInputElement, InputProps>(
-  function Input(props, ref) {
+const InputFile = memo(
+  React.forwardRef<HTMLInputElement, InputProps>(function Input(props, ref) {
     const { onChange, afterSlot, ...rest } = props;
     return (
       <div>
@@ -20,7 +21,7 @@ const InputFile = React.forwardRef<HTMLInputElement, InputProps>(
             type={"file"}
             ref={ref}
             hidden
-            onChange={(e) => onChange(e)}
+            onChange={onChange}
             disabled={rest.disabled}
             placeholder={rest.placeholder}
             onMouseOver={rest.onMouseOver}
@@ -36,7 +37,7 @@ const InputFile = React.forwardRef<HTMLInputElement, InputProps>(
         {afterSlot}
       </div>
     );
-  },
+  }),
 );
 
 InputFile.displayName = "InputFile";

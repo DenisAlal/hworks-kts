@@ -131,7 +131,7 @@ const ProductsTab = observer(() => {
       </Text>
 
       <div className={styles.products}>
-        {store.productsData?.map((item) => (
+        {store.productsData.map((item) => (
           <div key={item.id} className={styles.divCard}>
             <Card
               image={item.images[0]}

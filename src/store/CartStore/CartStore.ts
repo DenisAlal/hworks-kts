@@ -34,14 +34,17 @@ class CartStore {
   }
   getCartData = async () => {
     this._meta = Meta.loading;
-    axios
-      .get("https://api.escuelajs.co/api/v1/products/")
-      .then((response) => {
-        this.setCartData(
-          response.data.map((item: ProductsApi) => normalizeProducts(item, [])),
-        );
-      })
-      .catch(log);
+    try {
+      const response = await axios.get(
+        "https://api.escuelajs.co/api/v1/products/",
+      );
+      const normalized = response.data.map((item: ProductsApi) =>
+        normalizeProducts(item, null),
+      );
+      this.setCartData(normalized);
+    } catch (e) {
+      log(e);
+    }
   };
 
   setCartData = (data: ProductsModel[]) => {
@@ -50,7 +53,7 @@ class CartStore {
       const itemsArray = JSON.parse(cartItems);
       this.data = data.filter((item) => itemsArray.includes(item.id));
     }
-    setTimeout(() => (this._meta = Meta.success), 500);
+    this._meta = Meta.success;
   };
 
   clearCart = () => {

@@ -20,6 +20,7 @@ class UserModalStore {
   successMessage: string = "";
   profileData: ProfileModel | undefined;
   jwtState: string = "";
+
   constructor() {
     makeObservable<UserModalStore, PrivateFields>(this, {
       _meta: observable,
@@ -111,20 +112,21 @@ class UserModalStore {
     }
   };
   loginRequest = async () => {
-    axios
-      .post("https://api.escuelajs.co/api/v1/auth/login", {
-        email: this.authEmail,
-        password: this.authPass,
-      })
-      .then((response) => {
-        localStorage.setItem("jwt", response.data.access_token);
-        this.clearData();
-        this.getProfileData();
-      })
-      .catch((error) => {
-        log(error);
-        this.errorMessage = "Login error! incorrect email or password";
-      });
+    try {
+      const response = await axios.post(
+        "https://api.escuelajs.co/api/v1/auth/login",
+        {
+          email: this.authEmail,
+          password: this.authPass,
+        },
+      );
+      localStorage.setItem("jwt", response.data.access_token);
+      this.clearData();
+      this.getProfileData();
+    } catch (e) {
+      this.errorMessage = "Login error! incorrect email or password";
+      log(e);
+    }
   };
   getProfileData = async () => {
     const token = localStorage.getItem("jwt");
@@ -133,13 +135,16 @@ class UserModalStore {
       const headers = {
         Authorization: `Bearer ${token}`,
       };
-      axios
-        .get("https://api.escuelajs.co/api/v1/auth/profile", { headers })
-        .then((response) => {
-          this.profileData = normalizeProfile(response.data);
-          setTimeout(() => (this._meta = Meta.success), 500);
-        })
-        .catch(log);
+      try {
+        const response = await axios.get(
+          "https://api.escuelajs.co/api/v1/auth/profile",
+          { headers },
+        );
+        this.profileData = normalizeProfile(response.data);
+        this._meta = Meta.success;
+      } catch (e) {
+        log(e);
+      }
     }
   };
   registration = () => {
@@ -174,36 +179,42 @@ class UserModalStore {
     }
   };
   registrationCheckRequest = async () => {
-    axios
-      .post("https://api.escuelajs.co/api/v1/users/is-available", {
-        email: this.registerEmail,
-      })
-      .then((response) => {
-        if (response.data.isAvilable) {
-          this.errorMessage = "Account with this email already exists!";
-        } else {
-          this.registrationRequest();
-        }
-      })
-      .catch(log);
+    try {
+      const response = await axios.post(
+        "https://api.escuelajs.co/api/v1/users/is-available",
+        {
+          email: this.registerEmail,
+        },
+      );
+      if (response.data.isAvilable) {
+        this.errorMessage = "Account with this email already exists!";
+      } else {
+        this.registrationRequest();
+      }
+    } catch (e) {
+      log(e);
+    }
   };
 
   registrationRequest = async () => {
-    axios
-      .post("https://api.escuelajs.co/api/v1/users/", {
-        name: this.registerLogin,
-        email: this.registerEmail,
-        password: this.registerPass,
-        avatar: "https://i.postimg.cc/T3whC3hX/Sign-in-icon.jpg",
-      })
-      .then((response) => {
-        if (response.status === 201) {
-          this.successMessage =
-            "The account has been successfully created, you can log in to your account on the login tab";
-          this.clearData();
-        }
-      })
-      .catch(log);
+    try {
+      const response = await axios.post(
+        "https://api.escuelajs.co/api/v1/users/",
+        {
+          name: this.registerLogin,
+          email: this.registerEmail,
+          password: this.registerPass,
+          avatar: "https://i.postimg.cc/T3whC3hX/Sign-in-icon.jpg",
+        },
+      );
+      if (response.status === 201) {
+        this.successMessage =
+          "The account has been successfully created, you can log in to your account on the login tab";
+        this.clearData();
+      }
+    } catch (e) {
+      log(e);
+    }
   };
 
   clearData = () => {
@@ -213,6 +224,7 @@ class UserModalStore {
     this.registerLogin = "";
     this.registerEmail = "";
     this.registerConfirmPass = "";
+    this.errorMessage = "";
   };
 
   logout = () => {

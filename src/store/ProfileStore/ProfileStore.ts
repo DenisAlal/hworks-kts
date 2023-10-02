@@ -62,25 +62,32 @@ class ProfileStore {
       const headers = {
         Authorization: `Bearer ${tokenProfile}`,
       };
-      axios
-        .get("https://api.escuelajs.co/api/v1/auth/profile", { headers })
-        .then((response) => {
-          this.profileData = normalizeProfile(response.data);
-          setTimeout(() => (this._meta = Meta.success), 500);
-        })
-        .catch(log);
+      try {
+        const response = await axios.get(
+          "https://api.escuelajs.co/api/v1/auth/profile",
+          { headers },
+        );
+        this.profileData = normalizeProfile(response.data);
+        this._meta = Meta.success;
+      } catch (e) {
+        log(e);
+      }
     }
   };
   uploadImage = async () => {
     if (this.imageSource) {
       const formData = new FormData();
       formData.append("file", this.imageSource);
-      await axios
-        .post("https://api.escuelajs.co/api/v1/files/upload", formData)
-        .then((response) => {
-          this.imageLink = response.data.location;
-        })
-        .catch(log);
+
+      try {
+        const response = await axios.post(
+          "https://api.escuelajs.co/api/v1/files/upload",
+          formData,
+        );
+        this.imageLink = response.data.location;
+      } catch (e) {
+        log(e);
+      }
     }
   };
   updateNewUserData = () => {
@@ -117,8 +124,8 @@ class ProfileStore {
       const headers = {
         Authorization: `Bearer ${tokenProfile}`,
       };
-      await axios
-        .put(
+      try {
+        const response = await axios.put(
           `https://api.escuelajs.co/api/v1/users/${this.profileData.id}`,
           {
             name:
@@ -131,14 +138,14 @@ class ProfileStore {
                 : this.newPassword,
           },
           { headers },
-        )
-        .then((response) => {
-          if (response.status === 200) {
-            this.clearAllData();
-            this.getProfileSettingsData();
-          }
-        })
-        .catch(log);
+        );
+        if (response.status === 200) {
+          this.clearAllData();
+          this.getProfileSettingsData();
+        }
+      } catch (e) {
+        log(e);
+      }
     }
   };
   setUserLogin = (value: string) => {

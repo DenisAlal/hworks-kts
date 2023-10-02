@@ -28,14 +28,17 @@ class CartModalStore {
   }
   getModalCartData = async () => {
     this._meta = Meta.loading;
-    axios
-      .get("https://api.escuelajs.co/api/v1/products/")
-      .then((response) => {
-        this.setModalCartData(
-          response.data.map((item: ProductsApi) => normalizeProducts(item, [])),
-        );
-      })
-      .catch(log);
+    try {
+      const response = await axios.get(
+        "https://api.escuelajs.co/api/v1/products/",
+      );
+      const normalized = response.data.map((item: ProductsApi) =>
+        normalizeProducts(item, null),
+      );
+      this.setModalCartData(normalized);
+    } catch (e) {
+      log(e);
+    }
   };
 
   setModalCartData = (data: ProductsModel[]) => {
@@ -44,7 +47,7 @@ class CartModalStore {
       const itemsArray = JSON.parse(cartModalItems);
       this.data = data.filter((item) => itemsArray.includes(item.id));
     }
-    setTimeout(() => (this._meta = Meta.success), 500);
+    this._meta = Meta.success;
   };
 }
 

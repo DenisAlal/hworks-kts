@@ -3,7 +3,7 @@ const path = require("path");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 const TsCheckerPlugin = require("fork-ts-checker-webpack-plugin");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
-const buildPath = path.resolve(__dirname, "dist");
+const buildPath = path.resolve(__dirname, "build");
 const srcPath = path.resolve(__dirname, "src");
 const isProd = process.env.NODE_ENV === "production";
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");

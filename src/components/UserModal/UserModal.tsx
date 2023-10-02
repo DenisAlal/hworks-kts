@@ -26,16 +26,9 @@ const UserModal: React.FC<ModalProps> = observer(
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState("login");
 
-    const handleLoginClick = useCallback(() => {
-      store.login();
-    }, []);
-
-    const handleRegistrationClick = useCallback(() => {
-      store.registration();
-    }, []);
-
-    const handleLogoutClick = useCallback(() => {
-      store.logout();
+    const handleSetActiveTab = useCallback((item: string) => {
+      setActiveTab(item);
+      store.clearData();
     }, []);
 
     const handleGoProfileClick = useCallback(() => {
@@ -54,7 +47,7 @@ const UserModal: React.FC<ModalProps> = observer(
     }, [store.profileData]);
 
     return (
-      <div className={cn(className, styles.UserModal)}>
+      <div className={cn(className, styles.userModal)}>
         <div className={styles.titleUserBlock}>
           <Text
             tag={"div"}
@@ -83,7 +76,7 @@ const UserModal: React.FC<ModalProps> = observer(
                     className={cn(styles.buttonsModal, {
                       [styles.activeButtonModal]: activeTab === "login",
                     })}
-                    onClick={() => setActiveTab("login")}
+                    onClick={() => handleSetActiveTab("login")}
                   >
                     Login
                   </Button>
@@ -91,7 +84,7 @@ const UserModal: React.FC<ModalProps> = observer(
                     className={cn(styles.buttonsModal, {
                       [styles.activeButtonModal]: activeTab === "register",
                     })}
-                    onClick={() => setActiveTab("register")}
+                    onClick={() => handleSetActiveTab("register")}
                   >
                     Registration
                   </Button>
@@ -131,7 +124,7 @@ const UserModal: React.FC<ModalProps> = observer(
                     <div className={styles.buttonContainer}>
                       <Button
                         className={styles.buttonAuth}
-                        onClick={handleLoginClick}
+                        onClick={() => store.login()}
                       >
                         Login
                       </Button>
@@ -206,7 +199,7 @@ const UserModal: React.FC<ModalProps> = observer(
                     <div className={styles.buttonContainer}>
                       <Button
                         className={styles.buttonAuth}
-                        onClick={handleRegistrationClick}
+                        onClick={() => store.registration()}
                       >
                         Register
                       </Button>
@@ -228,7 +221,7 @@ const UserModal: React.FC<ModalProps> = observer(
                     <Button onClick={handleGoProfileClick}>
                       <SettingsIcon />
                     </Button>
-                    <Button onClick={handleLogoutClick}>Logout</Button>
+                    <Button onClick={() => store.logout()}>Logout</Button>
                   </div>
                 </div>
               </div>

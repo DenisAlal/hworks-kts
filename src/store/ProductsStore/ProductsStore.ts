@@ -2,6 +2,7 @@ import axios from "axios";
 import { action, computed, makeObservable, observable, reaction } from "mobx";
 import { Option } from "components/Filter";
 import { Meta } from "utils/Meta.ts";
+import { log } from "utils/log.ts";
 import rootStore from "../RootStore";
 import {
   CategoryAPI,
@@ -27,6 +28,7 @@ class ProductsStore {
   selectedPage: number = 1;
   firstLoad = true;
   itemsArrayList: number[] = [];
+
   constructor() {
     makeObservable<ProductsStore, PrivateFields>(this, {
       _meta: observable,
@@ -97,9 +99,13 @@ class ProductsStore {
   getProducts = async () => {
     const cartItems = localStorage.getItem("cartItems");
     let onCartId: number[];
-    if (cartItems) {
+    const onCartMap = new Map<number, boolean>();
+
+    if (cartItems !== null) {
       onCartId = JSON.parse(cartItems);
+      onCartId.forEach((id) => onCartMap.set(id, true));
     }
+
     this._meta = Meta.loading;
     let categoryIdReq;
     if (
@@ -156,28 +162,30 @@ class ProductsStore {
     } else {
       offset = this.selectedPage * this._productsOnPage - this._productsOnPage;
     }
-    await axios
-      .get("https://api.escuelajs.co/api/v1/products", {
-        params: {
-          title: title,
-          categoryId: categoryIdReq,
-          offset: offset,
-          limit: this._productsOnPage,
+
+    try {
+      const response = await axios.get(
+        "https://api.escuelajs.co/api/v1/products",
+        {
+          params: {
+            title: title,
+            categoryId: categoryIdReq,
+            offset: offset,
+            limit: this._productsOnPage,
+          },
         },
-      })
-      .then((response) => {
-        this.setDataProducts(
-          response.data.map((item: ProductsApi) =>
-            normalizeProducts(item, onCartId),
-          ),
-        );
-        this.firstLoad = false;
-        this._meta = Meta.success;
-      })
-      .catch(() => {
-        this._meta = Meta.error;
-        this.setDataProducts([]);
-      });
+      );
+      const normalized = response.data.map((item: ProductsApi) =>
+        normalizeProducts(item, onCartMap.has(item.id)),
+      );
+      this.setDataProducts(normalized);
+      this.firstLoad = false;
+      this._meta = Meta.success;
+    } catch (e) {
+      this._meta = Meta.error;
+      this.setDataProducts([]);
+      log(e);
+    }
   };
 
   setDataProducts = (productsData: ProductsModel[]) => {
@@ -187,25 +195,26 @@ class ProductsStore {
 
   getCategories = async () => {
     this._meta = Meta.loading;
-    await axios
-      .get("https://api.escuelajs.co/api/v1/categories")
-      .then((response) => {
-        const normalizeCategoryResponse = response.data.map(
-          (item: CategoryAPI) => normalizeCategory(item),
-        );
-        this.setDataCategories(
-          normalizeCategoryResponse.map(
-            (item: { id: { toString: () => number }; name: string }) => ({
-              key: item.id.toString(),
-              value: item.name,
-            }),
-          ),
-        );
-      })
-      .catch(() => {
-        this._meta = Meta.error;
-        this.setDataCategories([]);
-      });
+
+    try {
+      const response = await axios.get(
+        "https://api.escuelajs.co/api/v1/categories",
+      );
+      const normalizeCategoryResponse = response.data.map((item: CategoryAPI) =>
+        normalizeCategory(item),
+      );
+      const normalized = normalizeCategoryResponse.map(
+        (item: { id: { toString: () => number }; name: string }) => ({
+          key: item.id.toString(),
+          value: item.name,
+        }),
+      );
+      this.setDataCategories(normalized);
+    } catch (e) {
+      this._meta = Meta.error;
+      this.setDataCategories([]);
+      log(e);
+    }
   };
   setDataCategories = (categories: Option[]) => {
     this.categories = categories;
@@ -214,20 +223,22 @@ class ProductsStore {
   getCountProductsData = async (categoryId: string | null, title: string) => {
     const newTitle = title !== "" ? title : null;
     this._meta = Meta.loading;
-    await axios
-      .get("https://api.escuelajs.co/api/v1/products", {
-        params: {
-          title: newTitle,
-          categoryId: categoryId,
+    try {
+      const response = await axios.get(
+        "https://api.escuelajs.co/api/v1/products",
+        {
+          params: {
+            title: newTitle,
+            categoryId: categoryId,
+          },
         },
-      })
-      .then((response) => {
-        this._setProductsCounterData(response.data.length);
-      })
-      .catch(() => {
-        this._meta = Meta.error;
-        this._setProductsCounterData(0);
-      });
+      );
+      this._setProductsCounterData(response.data.length);
+    } catch (e) {
+      this._meta = Meta.error;
+      this._setProductsCounterData(0);
+      log(e);
+    }
   };
   private _setProductsCounterData = (counterProductsData: number) => {
     this.counterProductsData = counterProductsData;
@@ -258,24 +269,24 @@ class ProductsStore {
   addToCart = (product?: ProductsModel) => {
     if (product) {
       const cartItems = localStorage.getItem("cartItems");
-      let itemsArray: number[];
+      const itemsMap = new Map<number, boolean>();
       if (cartItems) {
-        itemsArray = JSON.parse(cartItems);
-        if (itemsArray.indexOf(product.id) === -1) {
-          itemsArray.push(product.id);
-        } else {
-          itemsArray.splice(itemsArray.indexOf(product.id), 1);
-        }
+        const parsedItems = JSON.parse(cartItems);
+        parsedItems.forEach((itemId: number) => {
+          itemsMap.set(itemId, true);
+        });
+      }
+      if (itemsMap.has(product.id)) {
+        itemsMap.delete(product.id);
       } else {
-        itemsArray = [product.id];
+        itemsMap.set(product.id, true);
       }
-      if (itemsArray) {
-        this.setDataProducts(
-          this.productsData.map((item: ProductsApi) =>
-            normalizeProducts(item, itemsArray),
-          ),
-        );
-      }
+      const itemsArray = Array.from(itemsMap.keys());
+      this.setDataProducts(
+        this.productsData.map((item: ProductsApi) =>
+          normalizeProducts(item, itemsMap.has(item.id)),
+        ),
+      );
 
       localStorage.setItem("cartItems", JSON.stringify(itemsArray));
     }

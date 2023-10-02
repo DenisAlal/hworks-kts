@@ -1,5 +1,5 @@
 import * as React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route, HashRouter } from "react-router-dom";
 import Header from "components/Header";
 import {
   aboutPath,
@@ -19,7 +19,7 @@ import Profile from "./pages/Profile/Profile.tsx";
 const App: React.FC = () => {
   return (
     <AppContextProvider>
-      <BrowserRouter>
+      <HashRouter>
         <Header />
         <Routes>
           <Route path={productsPath} element={<ProductsTab />} />
@@ -29,7 +29,7 @@ const App: React.FC = () => {
           <Route path={categoriesPath} element={<CategoryTab />} />
           <Route path={aboutPath} element={<AboutTab />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </AppContextProvider>
   );
 };

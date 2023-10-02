@@ -10,7 +10,7 @@ export type InputProps = Omit<
   /** Значение поля */
   value: string;
   /** Callback, вызываемый при вводе данных в поле */
-  onChange: (value: string, inputType?: string) => void;
+  onChange: (value: string) => void;
   /** Слот для иконки справа */
   afterSlot?: React.ReactNode;
 };

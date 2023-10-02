@@ -23,7 +23,7 @@ export interface ProductsModel {
 }
 export const normalizeProducts = (
   from: ProductsApi,
-  cartIds: number[],
+  cartIds?: boolean | null,
 ): ProductsModel => ({
   id: from.id,
   title: from.title,
@@ -33,5 +33,5 @@ export const normalizeProducts = (
   creationAt: from.creationAt,
   updatedAt: from.updatedAt,
   category: from.category,
-  onCart: cartIds.includes(from.id),
+  onCart: cartIds ? cartIds : false,
 });
