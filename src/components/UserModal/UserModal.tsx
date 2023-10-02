@@ -124,7 +124,7 @@ const UserModal: React.FC<ModalProps> = observer(
                     <div className={styles.buttonContainer}>
                       <Button
                         className={styles.buttonAuth}
-                        onClick={() => store.login()}
+                        onClick={store.login}
                       >
                         Login
                       </Button>
@@ -199,7 +199,7 @@ const UserModal: React.FC<ModalProps> = observer(
                     <div className={styles.buttonContainer}>
                       <Button
                         className={styles.buttonAuth}
-                        onClick={() => store.registration()}
+                        onClick={store.registration}
                       >
                         Register
                       </Button>
@@ -221,7 +221,7 @@ const UserModal: React.FC<ModalProps> = observer(
                     <Button onClick={handleGoProfileClick}>
                       <SettingsIcon />
                     </Button>
-                    <Button onClick={() => store.logout()}>Logout</Button>
+                    <Button onClick={store.logout}>Logout</Button>
                   </div>
                 </div>
               </div>
