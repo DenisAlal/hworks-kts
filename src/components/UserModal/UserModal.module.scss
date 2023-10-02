@@ -1,0 +1,146 @@
+@import "styles/mixins";
+.userModal {
+  .titleUserBlock {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: var(--spase-s) var(--spase-xl);
+
+    .cartTitle {
+      font-size: 25px;
+    }
+
+    .closeButton {
+      height: 24px;
+      width: 24px;
+    }
+  }
+
+  .divider {
+    background: var(--secondaryColor);
+    margin: var(--spase-xxs);
+    height: 1px;
+  }
+
+  .loader {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 20px 0;
+  }
+
+  .loading {
+    animation: rotation 1s infinite;
+    height: 60px;
+    width: 60px;
+  }
+
+  @keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .authContent {
+    display: flex;
+    flex-direction: column;
+
+    .buttonsBlock {
+      margin: 20px 20px;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      gap: var(--spase-xxl);
+
+      .buttonsModal {
+        width: 100%;
+        background: var(--secondaryColor);
+      }
+
+      .activeButtonModal {
+        transition: 0.3s;
+        background: var(--accentColor);
+      }
+    }
+
+    .authBlock {
+      display: flex;
+      flex-direction: column;
+      margin: 0 20px 20px 20px;
+
+      .buttonContainer {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+
+        .buttonAuth {
+          width: 50%;
+        }
+      }
+
+      .errorBlock {
+        background: var(--errorBG);
+        color: var(--whiteColor);
+        padding: 5px 10px;
+        border-radius: 2px;
+        margin: 0;
+      }
+
+      .successBlock {
+        background: var(--accentColor);
+      }
+    }
+
+    .inputs {
+      margin-top: 20px;
+      border: solid 1px var(--secondaryColor);
+    }
+  }
+
+  .border {
+    margin: 5px 15px;
+    border: 1px solid rgba(175, 173, 181, 0.45);
+  }
+
+  .footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+    margin: 15px;
+  }
+
+  .emptyCart {
+    text-align: center;
+  }
+
+  .profileBlock {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 10px;
+
+    .profileName {
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+
+      .buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        margin: 0 10px;
+      }
+    }
+  }
+
+  .profileBlock img {
+    @include boxSize(105px);
+    margin: 10px;
+    border-radius: 10px;
+  }
+}

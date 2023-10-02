@@ -1,8 +1,8 @@
 import cn from "classnames";
+import * as React from "react";
 import { HTMLProps } from "react";
 import styles from "./PageLink.module.scss";
 export type Props = HTMLProps<HTMLAnchorElement> & { active?: boolean };
-
 export default function PageLink({
   className,
   active,

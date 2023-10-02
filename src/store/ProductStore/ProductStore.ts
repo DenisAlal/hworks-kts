@@ -5,11 +5,13 @@ import { log } from "utils/log.ts";
 import { normalizeProducts, ProductsApi, ProductsModel } from "../models";
 
 type PrivateFields = "_meta";
+
 class ProductStore {
   productData: ProductsModel | undefined;
   relativeProductsData: ProductsModel[] = [];
   imageCounter: number = 0;
   private _meta: Meta = Meta.initial;
+
   constructor() {
     makeObservable<ProductStore, PrivateFields>(this, {
       _meta: observable,
@@ -26,48 +28,57 @@ class ProductStore {
       prevImage: action,
     });
   }
+
   get meta(): Meta {
     return this._meta;
   }
+
   getProductData = async (id: string | undefined) => {
     this._meta = Meta.loading;
-    await axios
-      .get(`https://api.escuelajs.co/api/v1/products/${id}`)
-      .then((response) => {
-        this.setProductData(normalizeProducts(response.data));
-      })
-      .catch(log);
+
+    try {
+      const response = await axios.get(
+        `https://api.escuelajs.co/api/v1/products/${id}`,
+      );
+      const normalized = normalizeProducts(response.data, null);
+      this.setProductData(normalized);
+    } catch (e) {
+      log(e);
+    }
   };
   getRelativeProductsData = async (
     id: string | undefined,
     idCategory: number | undefined,
   ) => {
     this._meta = Meta.loading;
-    await axios
-      .get(`https://api.escuelajs.co/api/v1/products/`, {
-        params: {
-          categoryId: idCategory,
+    try {
+      const response = await axios.get(
+        "https://api.escuelajs.co/api/v1/products/",
+        {
+          params: {
+            categoryId: idCategory,
+          },
         },
-      })
-      .then((response) => {
-        const normalizedResponse = response.data.map((item: ProductsApi) =>
-          normalizeProducts(item),
+      );
+      const normalized = response.data.map((item: ProductsApi) =>
+        normalizeProducts(item, null),
+      );
+      if (id) {
+        const updatedData = normalized.filter(
+          (item: ProductsModel) => item.id !== Number(id),
         );
-        if (id) {
-          const updatedData = normalizedResponse.filter(
-            (item: ProductsModel) => item.id !== Number(id),
-          );
-          const randomItems: ProductsModel[] = this.getRandomItems(
-            updatedData,
-            3,
-          );
-          this.setRelativeProductsData(randomItems);
-        } else {
-          this.setRelativeProductsData(normalizedResponse);
-        }
-        this._meta = Meta.success;
-      })
-      .catch(log);
+        const randomItems: ProductsModel[] = this.getRandomItems(
+          updatedData,
+          3,
+        );
+        this.setRelativeProductsData(randomItems);
+      } else {
+        this.setRelativeProductsData(normalized);
+      }
+      this._meta = Meta.success;
+    } catch (e) {
+      log(e);
+    }
   };
 
   getRandomItems = (data: ProductsModel[], count: number): ProductsModel[] => {

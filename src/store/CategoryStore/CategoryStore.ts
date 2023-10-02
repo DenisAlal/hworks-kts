@@ -21,14 +21,17 @@ class CategoryStore {
     return this._meta;
   }
   getCategoryData = async () => {
-    axios
-      .get("https://api.escuelajs.co/api/v1/categories")
-      .then((response) => {
-        this.setCategoryData(
-          response.data.map((item: CategoryAPI) => normalizeCategory(item)),
-        );
-      })
-      .catch(log);
+    try {
+      const response = await axios.get(
+        "https://api.escuelajs.co/api/v1/categories",
+      );
+      const normalized = response.data.map((item: CategoryAPI) =>
+        normalizeCategory(item),
+      );
+      this.setCategoryData(normalized);
+    } catch (e) {
+      log(e);
+    }
   };
 
   setCategoryData = (data: CategoryModel[]) => {

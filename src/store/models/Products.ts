@@ -19,8 +19,12 @@ export interface ProductsModel {
   creationAt: Date;
   updatedAt: Date;
   category: CategoryModel;
+  onCart: boolean;
 }
-export const normalizeProducts = (from: ProductsApi): ProductsModel => ({
+export const normalizeProducts = (
+  from: ProductsApi,
+  cartIds?: boolean | null,
+): ProductsModel => ({
   id: from.id,
   title: from.title,
   price: from.price,
@@ -29,4 +33,5 @@ export const normalizeProducts = (from: ProductsApi): ProductsModel => ({
   creationAt: from.creationAt,
   updatedAt: from.updatedAt,
   category: from.category,
+  onCart: cartIds ? cartIds : false,
 });

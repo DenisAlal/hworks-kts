@@ -1,5 +1,5 @@
-import { toJS } from "mobx";
 import { observer } from "mobx-react-lite";
+import * as React from "react";
 import { useCallback, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Button from "components/Button";
@@ -9,7 +9,6 @@ import Input from "components/Input";
 import Pagination from "components/Pagination";
 import Text from "components/Text";
 import ProductsStore from "store/ProductsStore";
-import { useQueryParamsStoreInit } from "store/RootStore/hooks/useQueryParamsStoreInit.ts";
 import { ProductsModel } from "store/models";
 import { useLocalStore } from "utils/useLocalStore.ts";
 import styles from "./ProductsTab.module.scss";
@@ -17,28 +16,18 @@ import styles from "./ProductsTab.module.scss";
 const ProductsTab = observer(() => {
   const navigate = useNavigate();
   const store = useLocalStore(() => new ProductsStore());
-  useQueryParamsStoreInit();
-
   const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
     store.getCategories();
   }, [store]);
 
   useEffect(() => {
-    if (store.valueUserOptions.length > 0 && store.inputClickButton !== "") {
-      store.getProducts();
-    }
-  }, [
-    store.inputClickButton,
-    store.valueUserOptions,
-    store.selectedPage,
-    store,
-  ]);
-
-  useEffect(() => {
     const newParams = new URLSearchParams(searchParams);
-    const { selectedPage, inputValue, valueUserOptions } = store;
-    newParams.set("page", `${selectedPage}`);
+    const { selectedPage, inputValue, valueUserOptions, firstLoad } = store;
+    if (!firstLoad) {
+      newParams.set("page", `${selectedPage}`);
+    }
+
     if (store.inputValue !== undefined && store.inputValue.length > 0) {
       newParams.set("title", `${inputValue}`);
     }
@@ -72,8 +61,12 @@ const ProductsTab = observer(() => {
     store.setClickInputSearchButton();
   }, [store]);
 
-
-
+  const handleClickNavigate = useCallback(
+    (navigateTo: number) => {
+      navigate(`/${navigateTo}`);
+    },
+    [navigate],
+  );
   return (
     <div className={styles.container}>
       <div className={styles.infoContent}>
@@ -112,7 +105,7 @@ const ProductsTab = observer(() => {
         <div>
           {store.categories && (
             <Filter
-              options={toJS(store.categories)}
+              options={store.categories}
               value={store.valueUserOptions}
               onChange={(newValue: Option[]) => {
                 store.setValueOptions(newValue);
@@ -138,7 +131,7 @@ const ProductsTab = observer(() => {
       </Text>
 
       <div className={styles.products}>
-        {store.productsData?.map((item) => (
+        {store.productsData.map((item) => (
           <div key={item.id} className={styles.divCard}>
             <Card
               image={item.images[0]}
@@ -148,11 +141,20 @@ const ProductsTab = observer(() => {
               contentSlot={`$${item.price}`}
               className={styles.card}
               actionSlot={
-                <Button onClick={(e) => handleClickCart(e, item)}>
-                  Add to Cart
-                </Button>
+                !item.onCart ? (
+                  <Button onClick={(e) => handleClickCart(e, item)}>
+                    Add to Cart
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={(e) => handleClickCart(e, item)}
+                    className={styles.removeFromCart}
+                  >
+                    Remove from Cart
+                  </Button>
+                )
               }
-              onClick={()  => navigate(`/${item.id}`)}
+              onClick={() => handleClickNavigate(item.id)}
             />
           </div>
         ))}

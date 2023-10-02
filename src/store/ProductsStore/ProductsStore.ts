@@ -2,6 +2,7 @@ import axios from "axios";
 import { action, computed, makeObservable, observable, reaction } from "mobx";
 import { Option } from "components/Filter";
 import { Meta } from "utils/Meta.ts";
+import { log } from "utils/log.ts";
 import rootStore from "../RootStore";
 import {
   CategoryAPI,
@@ -22,9 +23,12 @@ class ProductsStore {
   valueOptions: Option[] = [];
   inputValue: string | undefined;
   valueUserOptions: Option[] = [];
-  inputClickButton: string | undefined = "";
+  inputClickButton: string | undefined;
   pagesCountValue = 0;
   selectedPage: number = 1;
+  firstLoad = true;
+  itemsArrayList: number[] = [];
+
   constructor() {
     makeObservable<ProductsStore, PrivateFields>(this, {
       _meta: observable,
@@ -36,6 +40,7 @@ class ProductsStore {
       counterProductsData: observable,
       selectedPage: observable,
       valueUserOptions: observable,
+      itemsArrayList: observable,
       meta: computed,
       getCategories: action,
       getProducts: action,
@@ -79,7 +84,12 @@ class ProductsStore {
       ) {
         this.pagesCountValue = 2;
       } else {
-        this.pagesCountValue = Math.floor(pageCount / this._productsOnPage);
+        const pageCountNew = Math.floor(pageCount / this._productsOnPage);
+        if (pageCountNew * 9 < pageCount) {
+          this.pagesCountValue = pageCountNew + 1;
+        } else {
+          this.pagesCountValue = pageCountNew;
+        }
       }
     } else {
       this.pagesCountValue = 0;
@@ -87,6 +97,15 @@ class ProductsStore {
   }
 
   getProducts = async () => {
+    const cartItems = localStorage.getItem("cartItems");
+    let onCartId: number[];
+    const onCartMap = new Map<number, boolean>();
+
+    if (cartItems !== null) {
+      onCartId = JSON.parse(cartItems);
+      onCartId.forEach((id) => onCartMap.set(id, true));
+    }
+
     this._meta = Meta.loading;
     let categoryIdReq;
     if (
@@ -111,7 +130,6 @@ class ProductsStore {
         : null;
     }
     let title = "";
-
     if (rootStore.query.getParam("title")) {
       const newTitle = rootStore.query.getParam("title");
       if (newTitle !== undefined) {
@@ -123,7 +141,14 @@ class ProductsStore {
         title = this.inputClickButton;
       }
     }
-    this.getCountProductsData(categoryIdReq, title);
+    await this.getCountProductsData(categoryIdReq, title);
+    if (rootStore.query.getParam("page") && this.firstLoad) {
+      const page = Number(rootStore.query.getParam("page"));
+      const checkProducts = this.counterProductsData / page;
+      if (checkProducts >= 9) {
+        this.setSelectedPage(page);
+      }
+    }
     let offset;
     if (this.selectedPage === 1) {
       offset = 0;
@@ -135,56 +160,61 @@ class ProductsStore {
     ) {
       offset = this._productsOnPage;
     } else {
-      offset = this.selectedPage * this._productsOnPage;
+      offset = this.selectedPage * this._productsOnPage - this._productsOnPage;
     }
 
-    await axios
-      .get("https://api.escuelajs.co/api/v1/products", {
-        params: {
-          title: title,
-          categoryId: categoryIdReq,
-          offset: offset,
-          limit: this._productsOnPage,
+    try {
+      const response = await axios.get(
+        "https://api.escuelajs.co/api/v1/products",
+        {
+          params: {
+            title: title,
+            categoryId: categoryIdReq,
+            offset: offset,
+            limit: this._productsOnPage,
+          },
         },
-      })
-      .then((response) => {
-        this.setDataProducts(
-          response.data.map((item: ProductsApi) => normalizeProducts(item)),
-        );
-
-        this._meta = Meta.success;
-      })
-      .catch(() => {
-        this._meta = Meta.error;
-        this.setDataProducts([]);
-      });
+      );
+      const normalized = response.data.map((item: ProductsApi) =>
+        normalizeProducts(item, onCartMap.has(item.id)),
+      );
+      this.setDataProducts(normalized);
+      this.firstLoad = false;
+      this._meta = Meta.success;
+    } catch (e) {
+      this._meta = Meta.error;
+      this.setDataProducts([]);
+      log(e);
+    }
   };
 
   setDataProducts = (productsData: ProductsModel[]) => {
     this.productsData = productsData;
+    this.addToCart();
   };
 
   getCategories = async () => {
     this._meta = Meta.loading;
-    await axios
-      .get("https://api.escuelajs.co/api/v1/categories")
-      .then((response) => {
-        const normalizeCategoryResponse = response.data.map(
-          (item: CategoryAPI) => normalizeCategory(item),
-        );
-        this.setDataCategories(
-          normalizeCategoryResponse.map(
-            (item: { id: { toString: () => number }; name: string }) => ({
-              key: item.id.toString(),
-              value: item.name,
-            }),
-          ),
-        );
-      })
-      .catch(() => {
-        this._meta = Meta.error;
-        this.setDataCategories([]);
-      });
+
+    try {
+      const response = await axios.get(
+        "https://api.escuelajs.co/api/v1/categories",
+      );
+      const normalizeCategoryResponse = response.data.map((item: CategoryAPI) =>
+        normalizeCategory(item),
+      );
+      const normalized = normalizeCategoryResponse.map(
+        (item: { id: { toString: () => number }; name: string }) => ({
+          key: item.id.toString(),
+          value: item.name,
+        }),
+      );
+      this.setDataCategories(normalized);
+    } catch (e) {
+      this._meta = Meta.error;
+      this.setDataCategories([]);
+      log(e);
+    }
   };
   setDataCategories = (categories: Option[]) => {
     this.categories = categories;
@@ -193,39 +223,73 @@ class ProductsStore {
   getCountProductsData = async (categoryId: string | null, title: string) => {
     const newTitle = title !== "" ? title : null;
     this._meta = Meta.loading;
-    await axios
-      .get("https://api.escuelajs.co/api/v1/products", {
-        params: {
-          title: newTitle,
-          categoryId: categoryId,
+    try {
+      const response = await axios.get(
+        "https://api.escuelajs.co/api/v1/products",
+        {
+          params: {
+            title: newTitle,
+            categoryId: categoryId,
+          },
         },
-      })
-      .then((response) => {
-        this._setProductsCounterData(response.data.length);
-      })
-      .catch(() => {
-        this._meta = Meta.error;
-        this._setProductsCounterData(0);
-      });
+      );
+      this._setProductsCounterData(response.data.length);
+    } catch (e) {
+      this._meta = Meta.error;
+      this._setProductsCounterData(0);
+      log(e);
+    }
   };
   private _setProductsCounterData = (counterProductsData: number) => {
     this.counterProductsData = counterProductsData;
   };
   setValueOptions = (value: Option[]) => {
     this.valueUserOptions = value;
+    if (!this.firstLoad) {
+      this.getProducts();
+    }
   };
+
   setValueInput = (value: string): string => {
     return (this.inputValue = value);
   };
   setSelectedPage = (selectedPage: number) => {
     this.selectedPage = selectedPage;
+    if (!this.firstLoad) {
+      this.getProducts();
+    }
   };
   setClickInputSearchButton = () => {
     this.inputClickButton = this.inputValue;
+    if (!this.firstLoad) {
+      this.getProducts();
+    }
   };
 
-  addToCart = (id: ProductsModel) => {
-    alert(`Товар с id: ${id.id} добавлен в корзину`);
+  addToCart = (product?: ProductsModel) => {
+    if (product) {
+      const cartItems = localStorage.getItem("cartItems");
+      const itemsMap = new Map<number, boolean>();
+      if (cartItems) {
+        const parsedItems = JSON.parse(cartItems);
+        parsedItems.forEach((itemId: number) => {
+          itemsMap.set(itemId, true);
+        });
+      }
+      if (itemsMap.has(product.id)) {
+        itemsMap.delete(product.id);
+      } else {
+        itemsMap.set(product.id, true);
+      }
+      const itemsArray = Array.from(itemsMap.keys());
+      this.setDataProducts(
+        this.productsData.map((item: ProductsApi) =>
+          normalizeProducts(item, itemsMap.has(item.id)),
+        ),
+      );
+
+      localStorage.setItem("cartItems", JSON.stringify(itemsArray));
+    }
   };
 
   getTitle = (elements: Option[]) =>
