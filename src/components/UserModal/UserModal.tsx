@@ -1,12 +1,12 @@
 import cn from "classnames";
-import { motion, AnimatePresence } from "framer-motion";
-import { observer } from "mobx-react-lite";
+import {AnimatePresence, motion} from "framer-motion";
+import {observer} from "mobx-react-lite";
 import * as React from "react";
-import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {useCallback, useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 import UserModalStore from "store/UserModalStore";
-import { Meta } from "utils/Meta.ts";
-import { useLocalStore } from "utils/useLocalStore.ts";
+import {Meta} from "utils/Meta.ts";
+import {useLocalStore} from "utils/useLocalStore.ts";
 import Button from "../Button";
 import Input from "../Input";
 import Loader from "../Loader";
@@ -69,7 +69,7 @@ const UserModal: React.FC<ModalProps> = observer(
           </div>
         ) : (
           <div>
-            {store.jwtState === "" ? (
+            {store.jwtState === "" || store.meta === Meta.error ? (
               <div className={styles.authContent}>
                 <div className={styles.buttonsBlock}>
                   <Button

@@ -140,9 +140,12 @@ class UserModalStore {
           "https://api.escuelajs.co/api/v1/auth/profile",
           { headers },
         );
+
         this.profileData = normalizeProfile(response.data);
         this._meta = Meta.success;
       } catch (e) {
+        this._meta = Meta.error
+        localStorage.setItem("jwt", "")
         log(e);
       }
     }
