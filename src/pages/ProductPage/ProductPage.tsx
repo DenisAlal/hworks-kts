@@ -120,7 +120,7 @@ const ProductPage = observer(() => {
             Related Items
           </Text>
           <div className={styles.products}>
-            {productStore.relativeProductsData.map((item) => (
+            {productStore.relativeProductsData.length > 0 && productStore.relativeProductsData.map((item) => (
               <div key={item.id} className={styles.divCard}>
                 <Card
                   image={item.images[0]}
@@ -134,7 +134,7 @@ const ProductPage = observer(() => {
                       Add to Cart
                     </Button>
                   }
-                  onClick={() => navigate(`/${id}`)}
+                  onClick={() => navigate(`/${item.id}`) }
                 />
               </div>
             ))}
